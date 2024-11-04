@@ -41,7 +41,7 @@ This feature allows you to store JSON schema files in a directory and validate J
 
 The schema information is loaded into a pocketbase collection that is automatically created when the application starts. The collection is named `_schema` by default, but you can change the name by setting the `table` configuration parameter. This table is prevented from anyone (including superusers) from editing the table structure or the data in the table.
 
-The `viewRule` configuration parameter can be used to adjust who can see the schema information. This defaults to superusers only. Making the schema information available to users of teh API may be useful as it allows the user to ensure they are correctly providing the data that is expected.
+The `viewRule` configuration parameter can be used to adjust who can see the schema information. This defaults to superusers only. Making the schema information available to users of the API may be useful as it allows the user to ensure they are correctly providing the data that is expected.
 
 Note that the data is only validated on record creation or update, so incorrectly stored data will be served up.
 
@@ -55,7 +55,7 @@ _Note that all configuration parameters are in the `validation` section of the c
 - `schemaDir` (string): Directory where JSON schema files are stored. Default is `./pb_schema`.
 - `table` (string): Database table used for storing schema information. Default is `_schema`.
 - `viewRule` (bool): Restrict schema viewing to authorized users only. Default is `true`.
-- 'schema' (array): An array of schema objects. Each object has the following parameters:
+- `schema` (array): An array of schema objects. Each object has the following parameters:
   - `filename` (string): File name of the schema file.
   - `table` (string): Table name to validate against.
   - `column` (string): Column name to validate against.

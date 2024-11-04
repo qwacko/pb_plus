@@ -2,13 +2,13 @@ package validation
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 	"log"
 	"os"
 
 	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase"
+	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/spf13/viper"
 )
@@ -111,7 +111,7 @@ func ConfigureSchemaValidation(app *pocketbase.PocketBase, vAll *viper.Viper) {
 
 	app.OnCollectionUpdateRequest().BindFunc(func(e *core.CollectionRequestEvent) error {
 		if e.Collection.Name == schemaTable {
-			return errors.New("You cannot update the schema table")
+			return apis.NewForbiddenError("You cannot update the schema table", "")
 		}
 		return e.Next()
 	})
@@ -129,16 +129,16 @@ func ConfigureSchemaValidation(app *pocketbase.PocketBase, vAll *viper.Viper) {
 	})
 
 	app.OnCollectionDeleteExecute(schemaTable).BindFunc(func(e *core.CollectionEvent) error {
-		return errors.New("You cannot delete the schema table")
+		return apis.NewForbiddenError("You cannot delete the schema table", "")
 	})
 	app.OnRecordUpdateRequest(schemaTable).BindFunc(func(e *core.RecordRequestEvent) error {
-		return errors.New("You cannot update the schema table")
-	})
-	app.OnRecordDeleteRequest(schemaTable).BindFunc(func(e *core.RecordRequestEvent) error {
-		return errors.New("You cannot delete the schema table")
+		return apis.NewForbiddenError("You cannot update records in the schema table", "")
 	})
 	app.OnRecordCreateRequest(schemaTable).BindFunc(func(e *core.RecordRequestEvent) error {
-		return errors.New("You cannot create a record in the schema table")
+		return apis.NewForbiddenError("You cannot create a record in the schema table", "")
+	})
+	app.OnRecordDeleteRequest(schemaTable).BindFunc(func(e *core.RecordRequestEvent) error {
+		return apis.NewForbiddenError("You cannot delete a record in the schema table", "H")
 	})
 
 	// Add hooks for record creation and update to validate data

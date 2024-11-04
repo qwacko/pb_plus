@@ -76,15 +76,10 @@ func validateRecordData(app *pocketbase.PocketBase, record *core.Record, schemaT
 		return err
 	}
 
-	log.Println("Number of schemas found: ", len(tableSchemas))
-
 	for _, schemaRecord := range tableSchemas {
 
 		currentColumn := schemaRecord.GetString("column")
 		columnData := record.GetString(currentColumn)
-
-		log.Println("Validating column: ", currentColumn)
-		log.Println("Data: ", columnData)
 
 		// Skip validation if the column is empty
 		if columnData == "" {
