@@ -29,9 +29,7 @@ func main() {
 	// Plugins and hooks:
 	// ---------------------------------------------------------------
 
-	if v.GetBool("autoUpdate") {
-		ghupdate.MustRegister(app, app.RootCmd, ghupdate.Config{Owner: "qwacko", Repo: "pb_plus"})
-	}
+	ghupdate.MustRegister(app, app.RootCmd, ghupdate.Config{Owner: "qwacko", Repo: "pb_plus"})
 
 	// load jsvm (pb_hooks and pb_migrations)
 	jsvm.MustRegister(app, jsvm.Config{
