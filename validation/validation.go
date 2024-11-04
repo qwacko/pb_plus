@@ -1,10 +1,7 @@
 package validation
 
 import (
-	"crypto/md5"
 	"database/sql"
-	"encoding/hex"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -12,53 +9,14 @@ import (
 
 	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase"
-	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/spf13/viper"
-	"github.com/xeipuuv/gojsonschema"
 )
 
 type SchemaConfig struct {
 	Table    string `mapstructure:"table"`
 	Column   string `mapstructure:"column"`
 	Filename string `mapstructure:"filename"`
-}
-
-// Refactored hashMD5 function for efficiency
-func hashMD5(input string) string {
-	hasher := md5.Sum([]byte(input))
-	return hex.EncodeToString(hasher[:])
-}
-
-// Helper function to read and validate schema files
-func readAndValidateSchema(schemaPath string) (string, string, error) {
-	schemaContent, err := os.ReadFile(schemaPath)
-	if err != nil {
-		log.Printf("Error reading schema file %s: %v", schemaPath, err)
-		return "", "", err
-	}
-
-	if err := validateJSONSchema(string(schemaContent)); err != nil {
-		log.Printf("Invalid JSON schema in %s: %v", schemaPath, err)
-		return "", "", err
-	}
-
-	schemaHash := hashMD5(string(schemaContent))
-	return string(schemaContent), schemaHash, nil
-}
-
-func validateJSONSchema(schemaContent string) error {
-	var schema map[string]interface{}
-	if err := json.Unmarshal([]byte(schemaContent), &schema); err != nil {
-		return errors.New("invalid JSON schema")
-	}
-
-	loader := gojsonschema.NewStringLoader(schemaContent)
-	_, err := gojsonschema.NewSchema(loader)
-	if err != nil {
-		return errors.New("invalid JSON schema")
-	}
-	return nil
 }
 
 func ConfigureSchemaValidation(app *pocketbase.PocketBase, vAll *viper.Viper) {
@@ -202,147 +160,4 @@ func ConfigureSchemaValidation(app *pocketbase.PocketBase, vAll *viper.Viper) {
 	})
 
 	return
-}
-
-func validateRecordData(app *pocketbase.PocketBase, record *core.Record, schemaTable string) error {
-
-	var collection *core.Collection
-	collection, err := app.FindCollectionByNameOrId(schemaTable)
-	if err != nil {
-		return err
-	}
-
-	table := record.Collection().Name
-
-	filter := dbx.Params{
-		"table": table,
-	}
-
-	tableSchemas, err := app.FindRecordsByFilter(collection, "table = {:table}", "", 0, 0, filter)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil // No schema to validate against
-		}
-		return err
-	}
-
-	log.Println("Number of schemas found: ", len(tableSchemas))
-
-	for _, schemaRecord := range tableSchemas {
-
-		currentColumn := schemaRecord.GetString("column")
-		columnData := record.GetString(currentColumn)
-
-		log.Println("Validating column: ", currentColumn)
-		log.Println("Data: ", columnData)
-
-		// Skip validation if the column is empty
-		if columnData == "" {
-			continue
-		}
-
-		schemaContent := schemaRecord.GetString("schema")
-		if err := validateJSONSchema(schemaContent); err != nil {
-			return err
-		}
-
-		schemaLoader := gojsonschema.NewStringLoader(schemaContent)
-		dataLoader := gojsonschema.NewStringLoader(columnData)
-
-		result, err := gojsonschema.Validate(schemaLoader, dataLoader)
-		if err != nil {
-			return err
-		}
-
-		if !result.Valid() {
-			var errMsg string
-			for _, desc := range result.Errors() {
-				errMsg += desc.String() + "; "
-			}
-			return apis.NewBadRequestError(fmt.Sprintf("%v validation failed: %s", currentColumn, errMsg), errMsg)
-		}
-	}
-
-	return nil
-}
-
-func validateSchemaTableColumns(app *pocketbase.PocketBase, collection *core.Collection, viewRule *string) (*core.Collection, bool) {
-
-	changed := false
-
-	createOrUpdateCollectionRules(collection, RulesConfig{
-		ListRule:   viewRule,
-		ViewRule:   viewRule,
-		CreateRule: nil,
-		DeleteRule: nil,
-		UpdateRule: nil,
-	}, &changed)
-
-	createOrUpdateTextField(collection, "table", &core.TextField{
-		Name:        "table",
-		Required:    true,
-		Hidden:      false,
-		Min:         0,
-		Max:         0,
-		Presentable: true,
-	}, &changed)
-
-	createOrUpdateTextField(collection, "column", &core.TextField{
-		Name:        "column",
-		Required:    true,
-		Hidden:      false,
-		Min:         0,
-		Max:         0,
-		Presentable: true,
-	}, &changed)
-
-	createOrUpdateTextField(collection, "hash", &core.TextField{
-		Name:        "hash",
-		Required:    true,
-		Hidden:      false,
-		Min:         0,
-		Max:         0,
-		Presentable: false,
-	}, &changed)
-
-	createOrUpdateJSONField(collection, "schema", &core.JSONField{
-		Name:        "schema",
-		Required:    true,
-		Hidden:      false,
-		MaxSize:     0,
-		Presentable: false,
-	}, &changed)
-
-	createOrUpdateAutodateField(collection, "updated", &core.AutodateField{
-		Name:        "updated",
-		OnCreate:    true,
-		OnUpdate:    true,
-		Hidden:      false,
-		Presentable: false,
-	}, &changed)
-
-	createOrUpdateAutodateField(collection, "created", &core.AutodateField{
-		Name:        "created",
-		OnCreate:    true,
-		OnUpdate:    false,
-		Hidden:      false,
-		Presentable: false},
-		&changed)
-
-	return collection, changed
-
-}
-
-func getOrCreateSchemaCollection(app *pocketbase.PocketBase, schemaTable string, viewRule *string) *core.Collection {
-	collection, err := app.FindCollectionByNameOrId(schemaTable)
-	if err != nil {
-		collection = core.NewBaseCollection(schemaTable)
-		app.Save(collection)
-	}
-
-	collection, changed := validateSchemaTableColumns(app, collection, viewRule)
-	if changed {
-		app.Save(collection)
-	}
-	return collection
 }
