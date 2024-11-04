@@ -10,6 +10,11 @@ The application functions exactly like the base PocketBase application, but with
 - [Automatic Updates](#automatic-updates)
 - [JSON Schema Validation](#json-schema-validation) - Allows validation of json columns against schemas.
 - [Superuser Management](#superuser-management)
+- Collection Configuration From File - **Future**
+- Chat GPT / Open Router Integration - **Future**
+- Fetch Requests - **Future**
+- Settings Automatic Loading - **Future**
+- Schema Summary Endpoint / Diagram / Raw SQL (For AI to help writing view queries) - **Future**
 
 # Configuration Locations
 
