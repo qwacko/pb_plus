@@ -10,7 +10,7 @@ THe application functions exacly like the base PocketBase application, but with 
 
 ## Configuration Locations
 
-Configuration can be read from a toml file (./config.toml), yaml file (./config.yaml), JSON file (./config.json), or environment variables. The configuration is with the following precedence (higher overridea lower):
+Configuration can be read from a TOML file (./config.toml), YAML file (./config.yaml), JSON file (./config.json), or environment variables. The configuration is with the following precedence (higher overridea lower):
 
 1. Command Line Flag
 2. Environment variables
@@ -18,6 +18,7 @@ Configuration can be read from a toml file (./config.toml), yaml file (./config.
    - TOML file
    - YAML file
    - JSON file
+
      _Note that only the first of the configuration files found will be used._
 
 All the configuration that is available in the base PocketBase application is also available in PB Plus.
