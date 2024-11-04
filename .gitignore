@@ -1,8 +1,11 @@
-pb_data
-sk_build
-config.yaml
 .env
+config.toml
+config.json
+config.yaml
+
+pb_data
 pb_schema
-./config.toml
-./config.json
-./config.yaml
+pb_migrations
+
+
+

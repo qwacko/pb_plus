@@ -4,7 +4,13 @@ go 1.23
 
 toolchain go1.23.2
 
-require github.com/pocketbase/pocketbase v0.23.0-rc9
+require (
+	github.com/pocketbase/dbx v1.10.1
+	github.com/pocketbase/pocketbase v0.23.0-rc9
+	github.com/spf13/pflag v1.0.5
+	github.com/spf13/viper v1.19.0
+	github.com/xeipuuv/gojsonschema v1.2.0
+)
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7 // indirect
@@ -56,7 +62,6 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/ncruces/go-strftime v0.1.9 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.2 // indirect
-	github.com/pocketbase/dbx v1.10.1 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
@@ -64,9 +69,9 @@ require (
 	github.com/spf13/afero v1.11.0 // indirect
 	github.com/spf13/cast v1.7.0 // indirect
 	github.com/spf13/cobra v1.8.1 // indirect
-	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/spf13/viper v1.19.0 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
+	github.com/xeipuuv/gojsonpointer v0.0.0-20180127040702-4e3ac2762d5f // indirect
+	github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	gocloud.dev v0.40.0 // indirect
