@@ -41,7 +41,7 @@ archives:
     format: zip
     files:
       - LICENSE.md
-      - CHANGELOG.md
+      # - CHANGELOG.md
 
 checksum:
   name_template: "checksums.txt"
