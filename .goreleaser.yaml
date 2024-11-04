@@ -34,14 +34,20 @@ builds:
 
 release:
   draft: true
+  prerelease: auto
+  mode: replace
+  header: |
+    ## Release {{ .Tag }} ({{ .Date }})
+  footer: |
+    **Full Changelog**: https://github.com/qwacko/pb_plus/compare/{{ .PreviousTag }}...{{ .Tag }}
 
 archives:
   - id: archive_noncgo
     builds: [build_noncgo]
     format: zip
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     files:
       - LICENSE.md
-      # - CHANGELOG.md
 
 checksum:
   name_template: "checksums.txt"
