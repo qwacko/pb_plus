@@ -13,7 +13,7 @@ import (
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
 	"github.com/pocketbase/pocketbase/tools/hook"
 
-	config "pb_plus/config"
+	"pb_plus/config"     //Import the new config package
 	"pb_plus/validation" // Import the new validation package
 )
 
