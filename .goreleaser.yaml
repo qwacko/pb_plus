@@ -10,7 +10,7 @@ before:
 
 builds:
   - id: build_noncgo
-    main: ./examples/base
+    main: ./
     binary: pocketbase
     ldflags:
       - -s -w -X github.com/qwacko/pb_plus.Version={{ .Version }}
