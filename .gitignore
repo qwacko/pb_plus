@@ -2,3 +2,7 @@ pb_data
 sk_build
 config.yaml
 .env
+pb_schema
+./config.toml
+./config.json
+./config.yaml

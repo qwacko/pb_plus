@@ -14,6 +14,7 @@ import (
 	"github.com/pocketbase/pocketbase/tools/hook"
 
 	config "pb_plus/config"
+	"pb_plus/validation" // Import the new validation package
 )
 
 func main() {
@@ -60,6 +61,9 @@ func main() {
 		},
 		Priority: 999, // execute as latest as possible to allow users to provide their own route
 	})
+
+	// Configure schema validation
+	validation.ConfigureSchemaValidation(app, v)
 
 	if err := app.Start(); err != nil {
 		log.Fatal(err)
