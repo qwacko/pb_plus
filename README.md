@@ -2,25 +2,22 @@
 
 PB Plus is an extension of the base PocketBase application with additional features that can be turned on and off. Currently, it includes the base PocketBase functionality, and more features will be added in the future.
 
-## Features
+THe application functions exacly like the base PocketBase application, but with additional features as listed below.
 
-- Base PocketBase functionality
-- JavaScript VM for app hooks and migrations
-- Migration command with JavaScript templates
-- Static file serving from a specified directory
+## Additional Features
 
-## Optional Plugin Flags
+- [Config From More Locations](#configuration-locations)
 
-The following flags can be used to configure the application:
+## Configuration Locations
 
-- `--hooksDir`: The directory with the JS app hooks.
-- `--hooksWatch`: Auto restart the app on pb_hooks file change (default: true).
-- `--hooksPool`: The total prewarm goja.Runtime instances for the JS app hooks execution (default: 15).
-- `--migrationsDir`: The directory with the user-defined migrations.
-- `--automigrate`: Enable/disable auto migrations (default: true).
-- `--publicDir`: The directory to serve static files (default: "./pb_public").
-- `--indexFallback`: Fallback the request to index.html on missing static path (default: true).
+Configuration can be read from a toml file (./config.toml), yaml file (./config.yaml), JSON file (./config.json), or environment variables. The configuration is with the following precedence (higher overridea lower):
 
-## Usage
+1. Command Line Flag
+2. Environment variables
+3. One Of:
+   - TOML file
+   - YAML file
+   - JSON file
+     _Note that only the first of the configuration files found will be used._
 
-To start the application, run:
+All the configuration that is available in the base PocketBase application is also available in PB Plus.
