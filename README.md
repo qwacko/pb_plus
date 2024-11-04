@@ -9,6 +9,7 @@ The application functions exactly like the base PocketBase application, but with
 - [Config From More Locations](#configuration-locations)
 - [Automatic Updates](#automatic-updates)
 - [JSON Schema Validation](#json-schema-validation) - Allows validation of json columns against schemas.
+- [Superuser Management](#superuser-management)
 
 # Configuration Locations
 
@@ -72,4 +73,38 @@ validation:
     - table: "testtable"
       column: "testcolumn"
       filename: "schema.json"
+```
+
+# Superuser Management
+
+Superusers can be automatically added to the system, and certain actions from superusers prevented using the configuration file. You can define superuser accounts and specify permissions to restrict actions such as creating, editing, or deleting collections and records.
+
+## Adding Superusers
+
+Superusers can be automaticall added (and passwords automatically updated) by specifying their email and password in the configuration file:
+
+```yaml
+superusers:
+  - email: "superuser1@example.com"
+    password: "password1"
+  - email: "superuser2@example.com"
+    password: "password2"
+```
+
+> **Warning:** The password is stored in plain text in the configuration file. Make sure to secure the configuration file or remove the password after adding the superusers. Superusers that exist in the database but not in the configuration file will **not** be automatically removed (or have their passwords automatically updated).
+
+## Preventing Actions for Superusers
+
+You can prevent superusers from performing certain actions by specifying permissions in the configuration file (`config.yaml`):
+
+```yaml
+superuser:
+  collections:
+    - name: "testtable"
+      preventCollectionCreate: true
+      preventCollectionUpdate: true
+      preventCollectionDelete: true
+      preventRecordCreate: false
+      preventRecordUpdate: true
+      preventRecordDelete: true
 ```

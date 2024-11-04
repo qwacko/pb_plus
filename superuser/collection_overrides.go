@@ -12,7 +12,7 @@ import (
 
 type CollectionOverrides struct {
 	Name                    string `mapstructure:"name"`
-	PreventCollectionEdit   bool   `mapstructure:"preventCollectionEdit"`
+	PreventCollectionUpdate bool   `mapstructure:"preventCollectionUpdate"`
 	PreventCollectionCreate bool   `mapstructure:"preventCollectionCreate"`
 	PreventCollectionDelete bool   `mapstructure:"preventCollectionDelete"`
 	PreventRecordCreate     bool   `mapstructure:"preventRecordCreate"`
@@ -44,7 +44,7 @@ func overrideCollections(app *pocketbase.PocketBase, v *viper.Viper) error {
 
 func processCollectionOverride(app *pocketbase.PocketBase, override CollectionOverrides) error {
 
-	if override.PreventCollectionEdit {
+	if override.PreventCollectionUpdate {
 		app.OnCollectionUpdateRequest().BindFunc(func(e *core.CollectionRequestEvent) error {
 			if e.Collection.Name == override.Name {
 				if e.HasSuperuserAuth() {
