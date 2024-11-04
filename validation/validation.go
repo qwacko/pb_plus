@@ -24,10 +24,27 @@ type SchemaConfig struct {
 	Filename string `mapstructure:"filename"`
 }
 
+// Refactored hashMD5 function for efficiency
 func hashMD5(input string) string {
-	hasher := md5.New()
-	hasher.Write([]byte(input))
-	return hex.EncodeToString(hasher.Sum(nil))
+	hasher := md5.Sum([]byte(input))
+	return hex.EncodeToString(hasher[:])
+}
+
+// Helper function to read and validate schema files
+func readAndValidateSchema(schemaPath string) (string, string, error) {
+	schemaContent, err := os.ReadFile(schemaPath)
+	if err != nil {
+		log.Printf("Error reading schema file %s: %v", schemaPath, err)
+		return "", "", err
+	}
+
+	if err := validateJSONSchema(string(schemaContent)); err != nil {
+		log.Printf("Invalid JSON schema in %s: %v", schemaPath, err)
+		return "", "", err
+	}
+
+	schemaHash := hashMD5(string(schemaContent))
+	return string(schemaContent), schemaHash, nil
 }
 
 func validateJSONSchema(schemaContent string) error {
@@ -82,9 +99,7 @@ func ConfigureSchemaValidation(app *pocketbase.PocketBase, vAll *viper.Viper) {
 		for _, config := range schemaConfigs {
 			schemaPath := schemaDir + "/" + config.Filename
 			if _, err := os.Stat(schemaPath); os.IsNotExist(err) {
-				//Throw an error if the schema file does not exist as we don't want
-				//to continue without the schema file
-				return err
+				return fmt.Errorf("schema file does not exist: %s", schemaPath)
 			}
 
 			result, err := app.FindFirstRecordByFilter(collection, "table = {:table} && column = {:column}", dbx.Params{
@@ -94,25 +109,19 @@ func ConfigureSchemaValidation(app *pocketbase.PocketBase, vAll *viper.Viper) {
 
 			if err != nil {
 				if err == sql.ErrNoRows {
-
 					new_record := core.NewRecord(collection)
 					new_record.Set("table", config.Table)
 					new_record.Set("column", config.Column)
-					schemaContent, err := os.ReadFile(schemaPath)
-					if err != nil {
-						log.Println("Error reading schema file: ", err)
-						return err
-					}
-					if err := validateJSONSchema(string(schemaContent)); err != nil {
-						log.Println("Invalid JSON schema: ", err)
-						return err
-					}
-					schemaHash := hashMD5(string(schemaContent))
-					new_record.Set("hash", schemaHash)
-					new_record.Set("schema", string(schemaContent))
 
-					err = app.Save(new_record)
+					schemaContent, schemaHash, err := readAndValidateSchema(schemaPath)
 					if err != nil {
+						return err
+					}
+
+					new_record.Set("hash", schemaHash)
+					new_record.Set("schema", schemaContent)
+
+					if err = app.Save(new_record); err != nil {
 						return err
 					}
 					continue
@@ -120,33 +129,23 @@ func ConfigureSchemaValidation(app *pocketbase.PocketBase, vAll *viper.Viper) {
 					return err
 				}
 			} else {
-
 				// Update the schema
-				schemaContent, err := os.ReadFile(schemaPath)
+				schemaContent, schemaHash, err := readAndValidateSchema(schemaPath)
 				if err != nil {
 					return err
 				}
-				if err := validateJSONSchema(string(schemaContent)); err != nil {
-					log.Println("Invalid JSON schema: ", err)
-					return err
-				}
-				schemaHash := hashMD5(string(schemaContent))
-				currentHash := result.GetString("hash")
-				hasDifference := currentHash != schemaHash
 
-				if hasDifference {
-					log.Print("Updating schema")
+				currentHash := result.GetString("hash")
+				if currentHash != schemaHash {
+					log.Println("Updating schema")
 					result.Set("hash", schemaHash)
-					result.Set("schema", string(schemaContent))
-					err = app.Save(result)
-					if err != nil {
-						log.Println("Error saving schema: ", err)
+					result.Set("schema", schemaContent)
+					if err = app.Save(result); err != nil {
+						log.Printf("Error saving schema: %v", err)
 						return err
 					}
 				}
-
 			}
-
 		}
 
 		return e.Next()
