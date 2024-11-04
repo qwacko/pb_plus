@@ -5,5 +5,6 @@
   "migrationsDir": "./pb_migrations",
   "automigrate": true,
   "publicDir": "./pb_public",
-  "indexFallback": true
+  "indexFallback": true,
+  "autoUpdate": false
 }

@@ -7,6 +7,7 @@ The application functions exactly like the base PocketBase application, but with
 # Additional Features
 
 - [Config From More Locations](#configuration-locations)
+- [Automatic Updates](#automatic-updates)
 
 # Configuration Locations
 
@@ -30,7 +31,13 @@ Example configuration files are included in the GitHub repository to help you ge
 
 - [config.toml](examples/example_config.toml)
 - [config.yaml](examples/example_config.yaml)
-- [config.json](examples/exampleconfig.json)
+- [config.json](examples/example_config.json)
 - [.env](examples/example_env.env)
 
 Feel free to copy and modify these files to suit your needs.
+
+# Automatic Updates
+
+PB Plus includes an automatic update feature that can be turned on or off using the `autoUpdate` configuration parameter. When enabled, the application will automatically update itself from the GitHub repository, ensuring you always have the latest version of both PocketBase and PB Plus.
+
+To enable or disable automatic updates, set the `autoUpdate` parameter in your configuration file.

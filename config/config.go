@@ -32,6 +32,7 @@ func LoadConfig() (*viper.Viper, error) {
 	v.SetDefault("automigrate", true)
 	v.SetDefault("publicDir", defaultPublicDir())
 	v.SetDefault("indexFallback", true)
+	v.SetDefault("autoUpdate", false)
 
 	// Bind command line flags
 	pflag.String("hooksDir", defaultHooksDir(), "the directory with the JS app hooks")
@@ -41,6 +42,7 @@ func LoadConfig() (*viper.Viper, error) {
 	pflag.Bool("automigrate", true, "enable/disable auto migrations")
 	pflag.String("publicDir", defaultPublicDir(), "the directory to serve static files")
 	pflag.Bool("indexFallback", true, "fallback the request to index.html on missing static path (eg. when pretty urls are used with SPA)")
+	pflag.Bool("autoUpdate", false, "enable/disable auto update from the GitHub repository")
 	pflag.Parse()
 	v.BindPFlags(pflag.CommandLine)
 
