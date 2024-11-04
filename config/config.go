@@ -25,19 +25,19 @@ func LoadConfig() (*viper.Viper, error) {
 	}
 
 	// Set default values
-	v.SetDefault("hooksDir", "")
+	v.SetDefault("hooksDir", defaultHooksDir())
 	v.SetDefault("hooksWatch", true)
 	v.SetDefault("hooksPool", 15)
-	v.SetDefault("migrationsDir", "")
+	v.SetDefault("migrationsDir", defaultMigrationsDir())
 	v.SetDefault("automigrate", true)
 	v.SetDefault("publicDir", defaultPublicDir())
 	v.SetDefault("indexFallback", true)
 
 	// Bind command line flags
-	pflag.String("hooksDir", "", "the directory with the JS app hooks")
+	pflag.String("hooksDir", defaultHooksDir(), "the directory with the JS app hooks")
 	pflag.Bool("hooksWatch", true, "auto restart the app on pb_hooks file change")
 	pflag.Int("hooksPool", 15, "the total prewarm goja.Runtime instances for the JS app hooks execution")
-	pflag.String("migrationsDir", "", "the directory with the user defined migrations")
+	pflag.String("migrationsDir", defaultMigrationsDir(), "the directory with the user defined migrations")
 	pflag.Bool("automigrate", true, "enable/disable auto migrations")
 	pflag.String("publicDir", defaultPublicDir(), "the directory to serve static files")
 	pflag.Bool("indexFallback", true, "fallback the request to index.html on missing static path (eg. when pretty urls are used with SPA)")
@@ -55,4 +55,22 @@ func defaultPublicDir() string {
 	}
 
 	return filepath.Join(os.Args[0], "../pb_public")
+}
+
+func defaultHooksDir() string {
+	if strings.HasPrefix(os.Args[0], os.TempDir()) {
+		// most likely ran with go run
+		return "./pb_hooks"
+	}
+
+	return filepath.Join(os.Args[0], "../pb_hooks")
+}
+
+func defaultMigrationsDir() string {
+	if strings.HasPrefix(os.Args[0], os.TempDir()) {
+		// most likely ran with go run
+		return "./pb_migrations"
+	}
+
+	return filepath.Join(os.Args[0], "../pb_migrations")
 }
