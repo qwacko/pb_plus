@@ -28,7 +28,7 @@ func createSuperusers(app *pocketbase.PocketBase, v *viper.Viper) error {
 
 	superusersCollection, err := app.FindCollectionByNameOrId("_superusers")
 	if err != nil {
-		return fmt.Errorf("Error finding superusers collection: %v", err)
+		return fmt.Errorf("error finding superusers collection: %v", err)
 	}
 
 	for _, account := range accounts {
@@ -45,11 +45,11 @@ func createSuperusers(app *pocketbase.PocketBase, v *viper.Viper) error {
 				record.Set("passwordConfirm", account.Password)
 
 				if err := app.Save(record); err != nil {
-					return fmt.Errorf("Error creating superuser account: %v", err)
+					return fmt.Errorf("error creating superuser account: %v", err)
 				}
 				continue
 			} else {
-				return fmt.Errorf("Error finding superuser account: %v", err)
+				return fmt.Errorf("error finding superuser account: %v", err)
 			}
 		}
 
@@ -57,7 +57,7 @@ func createSuperusers(app *pocketbase.PocketBase, v *viper.Viper) error {
 		existingAccount.Set("passwordConfirm", account.Password)
 
 		if err := app.Save(existingAccount); err != nil {
-			return fmt.Errorf("Error updating superuser account: %v", err)
+			return fmt.Errorf("error updating superuser account: %v", err)
 		}
 
 	}

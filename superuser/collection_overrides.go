@@ -34,15 +34,15 @@ func overrideCollections(app *pocketbase.PocketBase, v *viper.Viper) error {
 	log.Println("Processing collection overrides", overrides)
 
 	for _, override := range overrides {
-		if err := processCollectionOverride(app, override); err != nil {
-			return fmt.Errorf("Error processing collection override: %v", err)
+		if err := override.ProcessCollectionOverride(app); err != nil {
+			return fmt.Errorf("error processing collection override: %v", err)
 		}
 	}
 
 	return nil
 }
 
-func processCollectionOverride(app *pocketbase.PocketBase, override CollectionOverrides) error {
+func (override CollectionOverrides) ProcessCollectionOverride(app *pocketbase.PocketBase) error {
 
 	if override.PreventCollectionUpdate {
 		app.OnCollectionUpdateRequest().BindFunc(func(e *core.CollectionRequestEvent) error {

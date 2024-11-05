@@ -8,6 +8,11 @@ import (
 	"github.com/spf13/viper"
 )
 
+// TODO : Make View Collections Work
+// TODO : Make Auth Collections Work
+// TODO : Allow creation of indexes.
+// TODO : Create JSON Schema for collections to allow more complex validation.
+
 func SetupConfiguredCollections(app *pocketbase.PocketBase, vAll *viper.Viper) {
 
 	log.Println("SetupConfiguredCollections")

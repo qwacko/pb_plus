@@ -25,7 +25,7 @@ func ConfigureSuperuserOverrides(app *pocketbase.PocketBase, vAll *viper.Viper) 
 
 	app.OnServe().BindFunc(func(e *core.ServeEvent) error {
 		if err := createSuperusers(app, v); err != nil {
-			return fmt.Errorf("Error Creating Superusers: %v", err)
+			return fmt.Errorf("error Creating Superusers: %v", err)
 		}
 
 		return e.Next()

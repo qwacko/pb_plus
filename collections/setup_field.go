@@ -157,6 +157,7 @@ func (f *FieldConfig) createJSONField(app *pocketbase.PocketBase, collection *co
 }
 
 func (f *FieldConfig) createAutodateField(app *pocketbase.PocketBase, collection *core.Collection) {
+
 	collection.Fields.Add(&core.AutodateField{
 		Id:          f.getId(collection),
 		Name:        f.Name,

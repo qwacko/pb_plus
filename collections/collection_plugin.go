@@ -11,7 +11,6 @@ import (
 type CollectionPluginConfig struct {
 	Enabled                       bool               `mapstructure:"enabled" json:"enabled"`
 	RetainUnconfiguredCollections bool               `mapstructure:"retainUnconfiguredCollections" json:"retainUnconfiguredCollections"`
-	RetainUnconfiguredFields      bool               `mapstructure:"retainUnconfiguredFields" json:"retainUnconfiguredFields"`
 	FilterPrefix                  string             `mapstructure:"filterPrefix" json:"filterPrefix"`
 	Collections                   []CollectionConfig `mapstructure:"collections" json:"collections"`
 }
