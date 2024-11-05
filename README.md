@@ -2,7 +2,7 @@
 
 Pocketforge is an extension of the base PocketBase application with additional features that can be turned on and off. Currently, it includes the base PocketBase functionality, and more features will be added in the future.
 
-The application functions exactly like the base PocketBase application, but with additional features as listed below.
+The application functions exactly like the base PocketBase application (other than using the `pocketforge` command rather than `pocketbase`), but with additional features as listed below.
 
 # Additional Features
 

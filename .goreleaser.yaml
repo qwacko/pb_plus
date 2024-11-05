@@ -11,7 +11,7 @@ before:
 builds:
   - id: build_noncgo
     main: ./
-    binary: pocketbase
+    binary: pocketforge
     ldflags:
       - -s -w -X github.com/qwacko/pocketforge.Version={{ .Version }}
     env:
