@@ -1,6 +1,6 @@
-# PB Plus
+# Pocketforge
 
-PB Plus is an extension of the base PocketBase application with additional features that can be turned on and off. Currently, it includes the base PocketBase functionality, and more features will be added in the future.
+Pocketforge is an extension of the base PocketBase application with additional features that can be turned on and off. Currently, it includes the base PocketBase functionality, and more features will be added in the future.
 
 The application functions exactly like the base PocketBase application, but with additional features as listed below.
 
@@ -28,7 +28,7 @@ Configuration can be read from a TOML file, YAML file, JSON file, or environment
    - YAML file (./config.yaml)
    - JSON file (./config.json)
 
-All the configuration that is available in the base PocketBase application is also available in PB Plus.
+All the configuration that is available in the base PocketBase application is also available in Pocketforge.
 
 ## Example Configuration Files
 

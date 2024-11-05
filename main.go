@@ -13,10 +13,10 @@ import (
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
 	"github.com/pocketbase/pocketbase/tools/hook"
 
-	"pb_plus/collections"
-	"pb_plus/config" //Import the new config package
-	"pb_plus/superuser"
-	"pb_plus/validation" // Import the new validation package
+	"pocketforge/collections"
+	"pocketforge/config" //Import the new config package
+	"pocketforge/superuser"
+	"pocketforge/validation" // Import the new validation package
 )
 
 func main() {
@@ -32,7 +32,7 @@ func main() {
 	// Plugins and hooks:
 	// ---------------------------------------------------------------
 
-	ghupdate.MustRegister(app, app.RootCmd, ghupdate.Config{Owner: "qwacko", Repo: "pb_plus"})
+	ghupdate.MustRegister(app, app.RootCmd, ghupdate.Config{Owner: "qwacko", Repo: "pocketforge"})
 
 	// load jsvm (pb_hooks and pb_migrations)
 	jsvm.MustRegister(app, jsvm.Config{

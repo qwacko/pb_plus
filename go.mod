@@ -1,4 +1,4 @@
-module pb_plus
+module pocketforge
 
 go 1.23
 
