@@ -1,11 +1,16 @@
 package collections
 
 import (
+	"log"
+
 	"github.com/pocketbase/pocketbase"
+	"github.com/pocketbase/pocketbase/core"
 	"github.com/spf13/viper"
 )
 
 func SetupConfiguredCollections(app *pocketbase.PocketBase, vAll *viper.Viper) {
+
+	log.Println("SetupConfiguredCollections")
 
 	v := vAll.Sub("collections")
 
@@ -18,5 +23,12 @@ func SetupConfiguredCollections(app *pocketbase.PocketBase, vAll *viper.Viper) {
 	if !v.GetBool("enabled") {
 		return
 	}
+
+	app.OnServe().BindFunc(func(e *core.ServeEvent) error {
+
+		SetupCollections(app, v)
+
+		return e.Next()
+	})
 
 }
