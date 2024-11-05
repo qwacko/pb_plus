@@ -5,7 +5,7 @@ import (
 	"github.com/pocketbase/pocketbase/core"
 )
 
-func validateSchemaTableColumns(app *pocketbase.PocketBase, collection *core.Collection, viewRule *string) (*core.Collection, bool) {
+func validateSchemaTableColumns(collection *core.Collection, viewRule *string) (*core.Collection, bool) {
 
 	changed := false
 
@@ -79,7 +79,7 @@ func getOrCreateSchemaCollection(app *pocketbase.PocketBase, schemaTable string,
 		app.Save(collection)
 	}
 
-	collection, changed := validateSchemaTableColumns(app, collection, viewRule)
+	collection, changed := validateSchemaTableColumns(collection, viewRule)
 	if changed {
 		app.Save(collection)
 	}

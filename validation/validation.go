@@ -120,9 +120,9 @@ func ConfigureSchemaValidation(app *pocketbase.PocketBase, vAll *viper.Viper) {
 		// "e.HttpContext" is no longer available because "e" is the request event itself ...
 		if v.IsSet("viewRule") {
 			viewRule := v.GetString("viewRule")
-			validateSchemaTableColumns(app, e.Collection, &viewRule)
+			validateSchemaTableColumns(e.Collection, &viewRule)
 		} else {
-			validateSchemaTableColumns(app, e.Collection, nil)
+			validateSchemaTableColumns(e.Collection, nil)
 		}
 
 		return e.Next()

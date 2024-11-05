@@ -13,6 +13,7 @@ import (
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
 	"github.com/pocketbase/pocketbase/tools/hook"
 
+	"pb_plus/collections"
 	"pb_plus/config" //Import the new config package
 	"pb_plus/superuser"
 	"pb_plus/validation" // Import the new validation package
@@ -66,6 +67,7 @@ func main() {
 	// Configure schema validation
 	validation.ConfigureSchemaValidation(app, v)
 	superuser.ConfigureSuperuserOverrides(app, v)
+	collections.SetupConfiguredCollections(app, v)
 
 	if err := app.Start(); err != nil {
 		log.Fatal(err)
