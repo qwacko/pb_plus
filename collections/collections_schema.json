@@ -113,6 +113,15 @@
                 "minItems": 1,
                 "description": "The indexes to create on the collection",
                 "items": { "$ref": "#/definitions/index" }
+              },
+              "fields": {
+                "type": "array",
+                "title": "Collection Fields",
+                "minItems": 1,
+                "description": "List of all fields to create in the collection.",
+                "items": {
+                  "$ref": "collections_schema_fields.json"
+                }
               }
             },
             "required": ["id", "name", "type"],

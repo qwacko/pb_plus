@@ -39,8 +39,8 @@ type FieldConfig struct {
 	OnlyDomains   []string `form:"onlyDomains" json:"onlyDomains"`
 
 	// Date Specific
-	MinDate types.DateTime `form:"minDate" json:"minDate"`
-	MaxDate types.DateTime `form:"maxDate" json:"maxDate"`
+	MinDate string `form:"minDate" json:"minDate"`
+	MaxDate string `form:"maxDate" json:"maxDate"`
 
 	// Editor Specific
 	ConvertURLs bool `form:"convertURLs" json:"convertURLs"`
@@ -130,14 +130,15 @@ func (f *FieldConfig) getId(collection *core.Collection) string {
 
 func (f *FieldConfig) createTextField(app *pocketbase.PocketBase, collection *core.Collection) {
 	collection.Fields.Add(&core.TextField{
-		Id:          f.getId(collection),
-		Name:        f.Name,
-		Required:    f.Required,
-		Hidden:      f.Hidden,
-		Min:         f.Min,
-		Max:         f.Max,
-		Pattern:     f.Pattern,
-		Presentable: f.Presentable, AutogeneratePattern: f.AutogeneratePattern,
+		Id:                  f.getId(collection),
+		Name:                f.Name,
+		Required:            f.Required,
+		Hidden:              f.Hidden,
+		Min:                 f.Min,
+		Max:                 f.Max,
+		Pattern:             f.Pattern,
+		Presentable:         f.Presentable,
+		AutogeneratePattern: f.AutogeneratePattern,
 	})
 
 	app.Save(collection)
@@ -216,13 +217,24 @@ func (f *FieldConfig) createURLField(app *pocketbase.PocketBase, collection *cor
 }
 
 func (f *FieldConfig) createDateField(app *pocketbase.PocketBase, collection *core.Collection) {
+
+	maxDateTime, err := types.ParseDateTime(f.MaxDate)
+	if err != nil {
+		log.Panicf("Failed to parse MaxDate %s: %v", f.MaxDate, err)
+	}
+
+	minDateTime, err := types.ParseDateTime(f.MinDate)
+	if err != nil {
+		log.Panicf("Failed to parse MinDate %s: %v", f.MinDate, err)
+	}
+
 	collection.Fields.Add(&core.DateField{
 		Id:          f.getId(collection),
 		Name:        f.Name,
 		Required:    f.Required,
 		Hidden:      f.Hidden,
-		Min:         f.MinDate,
-		Max:         f.MaxDate,
+		Min:         minDateTime,
+		Max:         maxDateTime,
 		Presentable: f.Presentable,
 	})
 

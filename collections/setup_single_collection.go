@@ -188,7 +188,7 @@ func (configuration *CollectionConfig) getCollection(app *pocketbase.PocketBase)
 
 	collection, err := app.FindCollectionByNameOrId(configuration.ID)
 	if err != nil {
-		return nil, fmt.Errorf("Collection %s not found", configuration.ID)
+		return nil, fmt.Errorf("collection %s not found", configuration.ID)
 	}
 	configuration.collection = collection
 	return collection, nil
@@ -356,6 +356,8 @@ func (configuration *CollectionConfig) UpdateFields(app *pocketbase.PocketBase) 
 
 func (configuration *CollectionConfig) removeUnusedFields(app *pocketbase.PocketBase) {
 
+	configuration.refreshCollection(app)
+
 	if configuration.RetainUnconfiguredFields {
 		return
 	}
@@ -399,10 +401,6 @@ func (configuration *CollectionConfig) removeUnusedFields(app *pocketbase.Pocket
 			}
 		}
 
-		if found {
-			continue
-		}
-
 		for _, fieldId := range fieldIds_in_config {
 			if fieldId == field.GetId() {
 				found = true
@@ -410,12 +408,35 @@ func (configuration *CollectionConfig) removeUnusedFields(app *pocketbase.Pocket
 			}
 		}
 
+		if found {
+			continue
+		}
+
 		if !found {
 			log.Printf("Removing field %s from collection %s", field.GetName(), configuration.Name)
 			configuration.collection.Fields.RemoveById(field.GetId())
+			configuration.collection.Fields.RemoveByName(field.GetName())
 			configuration.saveAndRefreshCollection(app)
+
+			if configuration.collection.Fields.GetByName(field.GetName()) != nil {
+				log.Printf("Failed to remove field %s from collection %s. Possibly It Is Referred To Elsewhere (view)?", field.GetName(), configuration.Name)
+			}
+
 		}
 	}
+}
+
+func (configuration *CollectionConfig) RemoveCollection(app *pocketbase.PocketBase) {
+
+	_, err := configuration.refreshCollection(app)
+	if err != nil {
+		log.Println("Failed to find collection", err)
+		return
+	}
+
+	app.Delete(configuration.collection)
+
+	configuration.saveAndRefreshCollection(app)
 
 }
 

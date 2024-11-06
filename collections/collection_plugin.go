@@ -39,6 +39,9 @@ func SetupCollections(app *pocketbase.PocketBase, v *viper.Viper) {
 	// First we need to remove all teh indexes to allow removal of indexed fields.
 	for _, collectionConfig := range pluginConfig.Collections {
 		collectionConfig.RemoveIndexes(app)
+		if collectionConfig.Type == "view" {
+			collectionConfig.RemoveCollection(app)
+		}
 	}
 
 	// First create collections and then create fields to ensure the collections exist prior to creating any reference fields.
