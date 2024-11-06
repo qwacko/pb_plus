@@ -10,13 +10,13 @@ import (
 )
 
 type RulesConfig struct {
-	ListRule   *string `mapstructure:"listRule" json:"listRule"`
-	ViewRule   *string `mapstructure:"viewRule" json:"viewRule"`
-	CreateRule *string `mapstructure:"createRule" json:"createRule"`
-	DeleteRule *string `mapstructure:"deleteRule" json:"deleteRule"`
-	UpdateRule *string `mapstructure:"updateRule" json:"updateRule"`
-	AuthRule   *string `mapstructure:"authRule" json:"authRule"`
-	ManageRule *string `mapstructure:"manageRule" json:"manageRule"`
+	ListRule   *string `mapstructure:"list_rule" json:"list_rule"`
+	ViewRule   *string `mapstructure:"view_rule" json:"view_rule"`
+	CreateRule *string `mapstructure:"create_rule" json:"create_rule"`
+	DeleteRule *string `mapstructure:"delete_rule" json:"delete_rule"`
+	UpdateRule *string `mapstructure:"update_rule" json:"update_rule"`
+	AuthRule   *string `mapstructure:"auth_rule" json:"auth_rule"`
+	ManageRule *string `mapstructure:"manage_rule" json:"manage_rule"`
 }
 
 type CollectionConfig struct {
@@ -25,14 +25,14 @@ type CollectionConfig struct {
 	Type                     string        `mapstructure:"type" json:"type"`
 	Editable                 bool          `mapstructure:"editable" json:"editable"`
 	Rules                    RulesConfig   `mapstructure:"rules" json:"rules"`
-	AddDefaultFields         bool          `mapstructure:"addDefaultFields" json:"addDefaultFields"`
-	RetainUnconfiguredFields bool          `mapstructure:"retainUnconfiguredFields" json:"retainUnconfiguredFields"`
+	AddDefaultFields         bool          `mapstructure:"add_default_fields" json:"add_default_fields"`
+	RetainUnconfiguredFields bool          `mapstructure:"retain_unconfigured_fields" json:"retain_unconfigured_fields"`
 	Fields                   []FieldConfig `mapstructure:"fields" json:"fields"`
 	Indexes                  []IndexConfig `mapstructure:"indexes" json:"indexes"`
 	collection               *core.Collection
 
 	//View Specific Options
-	ViewQuery string `mapstructure:"viewQuery" json:"viewQuery"`
+	ViewQuery string `mapstructure:"view_query" json:"view_query"`
 }
 
 func (configuration *CollectionConfig) CreateOrUpdateCollection(app *pocketbase.PocketBase) {

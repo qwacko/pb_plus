@@ -35,8 +35,8 @@
         "pattern": {
           "$ref": "#/definitions/pattern"
         },
-        "autogeneratePattern": {
-          "$ref": "#/definitions/autogeneratePattern"
+        "autogenerate_pattern": {
+          "$ref": "#/definitions/autogenerate_pattern"
         }
       },
       "required": ["type", "id", "name"],
@@ -65,8 +65,8 @@
         "presentable": {
           "$ref": "#/definitions/presentable"
         },
-        "maxSize": {
-          "$ref": "#/definitions/maxSize"
+        "max_size": {
+          "$ref": "#/definitions/max_size"
         }
       },
       "required": ["type", "id", "name"],
@@ -92,11 +92,11 @@
         "presentable": {
           "$ref": "#/definitions/presentable"
         },
-        "onCreate": {
-          "$ref": "#/definitions/onCreate"
+        "on_create": {
+          "$ref": "#/definitions/on_create"
         },
-        "onUpdate": {
-          "$ref": "#/definitions/onUpdate"
+        "on_update": {
+          "$ref": "#/definitions/on_update"
         }
       },
       "required": ["type", "id", "name"],
@@ -125,14 +125,14 @@
         "presentable": {
           "$ref": "#/definitions/presentable"
         },
-        "maxSize": {
-          "$ref": "#/definitions/maxSize"
+        "max_size": {
+          "$ref": "#/definitions/max_size"
         },
-        "maxSelect": {
-          "$ref": "#/definitions/maxSelect"
+        "max_select": {
+          "$ref": "#/definitions/max_select"
         },
-        "mimeTypes": {
-          "$ref": "#/definitions/mimeTypes"
+        "mime_types": {
+          "$ref": "#/definitions/mime_types"
         },
         "thumbs": {
           "$ref": "#/definitions/thumbs"
@@ -167,11 +167,11 @@
         "presentable": {
           "$ref": "#/definitions/presentable"
         },
-        "exceptDomains": {
-          "$ref": "#/definitions/exceptDomains"
+        "except_domains": {
+          "$ref": "#/definitions/except_domains"
         },
-        "onlyDomains": {
-          "$ref": "#/definitions/onlyDomains"
+        "only_domains": {
+          "$ref": "#/definitions/only_domains"
         }
       },
       "required": ["type", "id", "name"],
@@ -200,11 +200,11 @@
         "presentable": {
           "$ref": "#/definitions/presentable"
         },
-        "minDate": {
-          "$ref": "#/definitions/minDate"
+        "min_date": {
+          "$ref": "#/definitions/min_date"
         },
-        "maxDate": {
-          "$ref": "#/definitions/maxDate"
+        "max_date": {
+          "$ref": "#/definitions/max_date"
         }
       },
       "required": ["type", "id", "name"],
@@ -233,11 +233,11 @@
         "presentable": {
           "$ref": "#/definitions/presentable"
         },
-        "maxSize": {
-          "$ref": "#/definitions/maxSize"
+        "max_size": {
+          "$ref": "#/definitions/max_size"
         },
-        "convertURLs": {
-          "$ref": "#/definitions/convertURLs"
+        "convert_urls": {
+          "$ref": "#/definitions/convert_urls"
         }
       },
       "required": ["type", "id", "name"],
@@ -266,8 +266,8 @@
         "presentable": {
           "$ref": "#/definitions/presentable"
         },
-        "maxSelect": {
-          "$ref": "#/definitions/maxSelect"
+        "max_select": {
+          "$ref": "#/definitions/max_select"
         },
         "values": {
           "$ref": "#/definitions/values"
@@ -338,17 +338,17 @@
         "presentable": {
           "$ref": "#/definitions/presentable"
         },
-        "collectionId": {
-          "$ref": "#/definitions/collectionId"
+        "collection_id": {
+          "$ref": "#/definitions/collection_id"
         },
-        "cascadeDelete": {
-          "$ref": "#/definitions/cascadeDelete"
+        "cascade_delete": {
+          "$ref": "#/definitions/cascade_delete"
         },
-        "maxSelect": {
-          "$ref": "#/definitions/maxSelect"
+        "max_select": {
+          "$ref": "#/definitions/max_select"
         },
-        "minSelect": {
-          "$ref": "#/definitions/minSelect"
+        "min_select": {
+          "$ref": "#/definitions/min_select"
         }
       },
       "required": ["type", "id", "name"],
@@ -378,14 +378,14 @@
         "presentable": {
           "$ref": "#/definitions/presentable"
         },
-        "minFloat": {
-          "$ref": "#/definitions/minFloat"
+        "min_float": {
+          "$ref": "#/definitions/min_float"
         },
-        "maxFloat": {
-          "$ref": "#/definitions/maxFloat"
+        "max_float": {
+          "$ref": "#/definitions/max_float"
         },
-        "onlyInt": {
-          "$ref": "#/definitions/onlyInt"
+        "only_int": {
+          "$ref": "#/definitions/only_int"
         }
       },
       "required": ["type", "id", "name"],
@@ -434,33 +434,33 @@
       "type": "string",
       "description": "Pattern specifies an optional regex pattern to match against the field value. Leave it empty to skip the pattern check."
     },
-    "autogeneratePattern": {
+    "autogenerate_pattern": {
       "type": "string",
-      "description": "AutogeneratePattern specifies an optional regex pattern that could be used to generate random string from it and set it automatically on record create if no explicit value is set or when the `:autogenerate` modifier is used."
+      "description": "autogenerate_pattern specifies an optional regex pattern that could be used to generate random string from it and set it automatically on record create if no explicit value is set or when the `:autogenerate` modifier is used."
     },
-    "maxSize": {
+    "max_size": {
       "type": "number",
-      "description": "MaxSize specifies the maximum allowed size in bytes. If zero, a default limit of 5MB is applied."
+      "description": "max_size specifies the maximum allowed size in bytes. If zero, a default limit of 5MB is applied."
     },
-    "onCreate": {
+    "on_create": {
       "type": "boolean",
-      "description": "OnCreate auto sets the current datetime as field value on record create."
+      "description": "on_create auto sets the current datetime as field value on record create."
     },
-    "onUpdate": {
+    "on_update": {
       "type": "boolean",
-      "description": "OnUpdate auto sets the current datetime as field value on record update."
+      "description": "on_update auto sets the current datetime as field value on record update."
     },
-    "maxSelect": {
+    "max_select": {
       "type": "number",
-      "description": "MaxSelect specifies the maximum number of items that can be selected in a select field. If zero, a default limit of 1 is applied."
+      "description": "max_select specifies the maximum number of items that can be selected in a select field. If zero, a default limit of 1 is applied."
     },
-    "minSelect": {
+    "min_select": {
       "type": "number",
-      "description": "MinSelect specifies the minimum number of items that can be selected in a select field. If zero, a default limit of 1 is applied."
+      "description": "min_select specifies the minimum number of items that can be selected in a select field. If zero, a default limit of 1 is applied."
     },
-    "mimeTypes": {
+    "mime_types": {
       "type": "array",
-      "description": "MimeTypes specifies the allowed mime types for file upload. If empty, all mime types are allowed.",
+      "description": "mime_types specifies the allowed mime types for file upload. If empty, all mime types are allowed.",
       "items": {
         "type": "string"
       }
@@ -478,33 +478,33 @@
       "description": "Protected will require the users to provide a special file token to access the file.",
       "default": false
     },
-    "exceptDomains": {
+    "except_domains": {
       "type": "array",
-      "description": "ExceptDomains will require the domain to NOT be included in the listed ones.This validator can be set only if OnlyDomains is empty.",
+      "description": "except_domains will require the domain to NOT be included in the listed ones.This validator can be set only if only_domains is empty.",
       "items": {
         "type": "string"
       }
     },
-    "onlyDomains": {
+    "only_domains": {
       "type": "array",
-      "description": "OnlyDomains will require the domain to be included in the listed ones. This validator can be set only if ExceptDomains is empty.",
+      "description": "only_domains will require the domain to be included in the listed ones. This validator can be set only if except_domains is empty.",
       "items": {
         "type": "string"
       }
     },
-    "minDate": {
+    "min_date": {
       "type": "string",
-      "description": "MinDate specifies the minimum allowed date and time. If empty, no min limit is applied.",
+      "description": "min_date specifies the minimum allowed date and time. If empty, no min limit is applied.",
       "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
     },
-    "maxDate": {
+    "max_date": {
       "type": "string",
-      "description": "MaxDate specifies the maximum allowed date. If empty, no max limit is applied.",
+      "description": "max_date specifies the maximum allowed date. If empty, no max limit is applied.",
       "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
     },
-    "convertURLs": {
+    "convert_urls": {
       "type": "boolean",
-      "description": "ConvertURLs is usually used to instruct the editor whether to apply url conversion (eg. stripping the domain name in case the urls are using the same domain as the one where the editor is loaded).",
+      "description": "convert_urls is usually used to instruct the editor whether to apply url conversion (eg. stripping the domain name in case the urls are using the same domain as the one where the editor is loaded).",
       "default": false
     },
     "values": {
@@ -519,27 +519,27 @@
       "description": "Cost specifies the cost/weight/iteration/etc. bcrypt factor. If zero, fallback to [bcrypt.DefaultCost]. If explicitly set, must be between [bcrypt.MinCost] and [bcrypt.MaxCost].",
       "default": 0
     },
-    "collectionId": {
+    "collection_id": {
       "type": "string",
-      "description": "CollectionId is the id (Note the name) of the related collection.",
+      "description": "collection_id is the id (Note the name) of the related collection.",
       "title": "Collection ID"
     },
-    "cascadeDelete": {
+    "cascade_delete": {
       "type": "boolean",
-      "description": "CascadeDelete indicates whether the root model should be deleted in case of delete of all linked relations.",
+      "description": "cascade_delete indicates whether the root model should be deleted in case of delete of all linked relations.",
       "default": false
     },
-    "minFloat": {
+    "min_float": {
       "type": "number",
-      "description": "MinFloat specifies the min allowed field value. Leave it nil to skip the validator."
+      "description": "min_float specifies the min allowed field value. Leave it nil to skip the validator."
     },
-    "maxFloat": {
+    "max_float": {
       "type": "number",
-      "description": "MaxFloat specifies the max allowed field value. Leave it nil to skip the validator."
+      "description": "max_float specifies the max allowed field value. Leave it nil to skip the validator."
     },
-    "onlyInt": {
+    "only_int": {
       "type": "boolean",
-      "description": "OnlyInt specifies that the field should only accept integer values."
+      "description": "only_int specifies that the field should only accept integer values."
     }
   }
 }

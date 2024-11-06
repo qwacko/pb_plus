@@ -9,13 +9,13 @@
       "type": "boolean",
       "default": true
     },
-    "retainUnconfiguredCollections": {
+    "retain_unconfigured_collections": {
       "title": "Retain Unconfigured Collections",
       "description": "If true, collections that are not configured will not be removed",
       "type": "boolean",
       "default": false
     },
-    "filterPrefix": {
+    "filter_prefix": {
       "title": "Filter Prefix",
       "description": "Ignores collections that do not start with this prefix when removing unconfigured collections",
       "type": "string",
@@ -35,7 +35,7 @@
                 "description": "The type of collection. Must be one of the following: 'base','auth',or 'view'.",
                 "enum": ["view"]
               },
-              "viewQuery": {
+              "view_query": {
                 "title": "View Query",
                 "type": "string",
                 "description": "The query to use for the view collection. Must be a valid SQL query."
@@ -88,7 +88,7 @@
                 "description": "The collection name. Must be unique within the collection. Also must have no spaces.",
                 "pattern": "^[a-zA-Z0-9_]+$"
               },
-              "addDefaultFields": {
+              "add_default_fields": {
                 "title": "Add Default Fields",
                 "description": "If true, then the default fields will be added to the collection",
                 "type": "boolean",
@@ -163,12 +163,12 @@
     "rules_view": {
       "type": "object",
       "properties": {
-        "listRule": {
+        "list_rule": {
           "title": "List Rule",
           "type": "string",
           "description": "The rule to use for listing records in the collection. Aligns with Pocketbase rules."
         },
-        "viewRule": {
+        "view_rule": {
           "title": "View Rule",
           "type": "string",
           "description": "The rule to use for viewing a single record in the collection. Aligns with Pocketbase rules."
@@ -179,27 +179,27 @@
     "rules_edit": {
       "type": "object",
       "properties": {
-        "listRule": {
+        "list_rule": {
           "title": "List Rule",
           "type": "string",
           "description": "The rule to use for listing records in the collection. Aligns with Pocketbase rules."
         },
-        "viewRule": {
+        "view_rule": {
           "title": "View Rule",
           "type": "string",
           "description": "The rule to use for viewing a single record in the collection. Aligns with Pocketbase rules."
         },
-        "createRule": {
+        "create_rule": {
           "title": "Create Rule",
           "type": "string",
           "description": "The rule to use for creating records in the collection. Aligns with Pocketbase rules."
         },
-        "updateRule": {
+        "update_rule": {
           "title": "Update Rule",
           "type": "string",
           "description": "The rule to use for updating records in the collection. Aligns with Pocketbase rules."
         },
-        "deleteRule": {
+        "delete_rule": {
           "title": "Delete Rule",
           "type": "string",
           "description": "The rule to use for deleting records in the collection. Aligns with Pocketbase rules."
@@ -210,37 +210,37 @@
     "rules_auth": {
       "type": "object",
       "properties": {
-        "listRule": {
+        "list_rule": {
           "title": "List Rule",
           "type": "string",
           "description": "The rule to use for listing records in the collection. Aligns with Pocketbase rules."
         },
-        "viewRule": {
+        "view_rule": {
           "title": "View Rule",
           "type": "string",
           "description": "The rule to use for viewing a single record in the collection. Aligns with Pocketbase rules."
         },
-        "createRule": {
+        "create_rule": {
           "title": "Create Rule",
           "type": "string",
           "description": "The rule to use for creating records in the collection. Aligns with Pocketbase rules."
         },
-        "updateRule": {
+        "update_rule": {
           "title": "Update Rule",
           "type": "string",
           "description": "The rule to use for updating records in the collection. Aligns with Pocketbase rules."
         },
-        "deleteRule": {
+        "delete_rule": {
           "title": "Delete Rule",
           "type": "string",
           "description": "The rule to use for deleting records in the collection. Aligns with Pocketbase rules."
         },
-        "authRule": {
+        "auth_rule": {
           "title": "Auth Rule",
           "type": "string",
           "description": "Rule for authenticating against the collection. Aligns with Pocketbase rules."
         },
-        "manageRule": {
+        "manage_rule": {
           "title": "Manage Rule",
           "type": "string",
           "description": "Rule for who can fully manage the auth (i.e. change password without entering current password). Aligns with Pocketbase rules."

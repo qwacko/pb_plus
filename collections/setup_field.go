@@ -17,43 +17,43 @@ type FieldConfig struct {
 	Hidden              bool    `mapstructure:"hidden" json:"hidden"`
 	Min                 int     `mapstructure:"min" json:"min"`
 	Max                 int     `mapstructure:"max" json:"max"`
-	MinFloat            float64 `mapstructure:"minFloat" json:"minFloat"`
-	MaxFloat            float64 `mapstructure:"maxFloat" json:"maxFloat"`
-	MaxSize             int64   `mapstructure:"maxSize" json:"maxSize"`
+	MinFloat            float64 `mapstructure:"min_float" json:"min_float"`
+	MaxFloat            float64 `mapstructure:"max_float" json:"max_float"`
+	MaxSize             int64   `mapstructure:"max_size" json:"max_size"`
 	Presentable         bool    `mapstructure:"presentable" json:"presentable"`
-	Pattern             string  `form:"pattern" json:"pattern"`
-	AutogeneratePattern string  `form:"autogeneratePattern" json:"autogeneratePattern"`
-	OnCreate            bool    `form:"onCreate" json:"onCreate"`
-	OnUpdate            bool    `form:"onUpdate" json:"onUpdate"`
-	OnlyInt             bool    `form:"onlyInt" json:"onlyInt"`
-	MinSelect           int     `form:"minSelect" json:"minSelect"`
-	MaxSelect           int     `form:"maxSelect" json:"maxSelect"`
+	Pattern             string  `mapstructure:"pattern" json:"pattern"`
+	AutogeneratePattern string  `mapstructure:"autogenerate_pattern" json:"autogenerate_pattern"`
+	OnCreate            bool    `mapstructure:"on_create" json:"on_create"`
+	OnUpdate            bool    `mapstructure:"on_update" json:"on_update"`
+	OnlyInt             bool    `mapstructure:"only_int" json:"only_int"`
+	MinSelect           int     `mapstructure:"min_select" json:"min_select"`
+	MaxSelect           int     `mapstructure:"max_select" json:"max_select"`
 
 	// File Specific
-	MimeTypes []string `form:"mimeTypes" json:"mimeTypes"`
-	Thumbs    []string `form:"thumbs" json:"thumbs"`
-	Protected bool     `form:"protected" json:"protected"`
+	MimeTypes []string `mapstructure:"mime_types" json:"mime_types"`
+	Thumbs    []string `mapstructure:"thumbs" json:"thumbs"`
+	Protected bool     `mapstructure:"protected" json:"protected"`
 
 	// Email and URL Specific
-	ExceptDomains []string `form:"exceptDomains" json:"exceptDomains"`
-	OnlyDomains   []string `form:"onlyDomains" json:"onlyDomains"`
+	ExceptDomains []string `mapstructure:"except_domains" json:"except_domains"`
+	OnlyDomains   []string `mapstructure:"only_domains" json:"only_domains"`
 
 	// Date Specific
-	MinDate string `form:"minDate" json:"minDate"`
-	MaxDate string `form:"maxDate" json:"maxDate"`
+	MinDate string `mapstructure:"min_date" json:"min_date"`
+	MaxDate string `mapstructure:"max_date" json:"max_date"`
 
 	// Editor Specific
-	ConvertURLs bool `form:"convertURLs" json:"convertURLs"`
+	ConvertURLs bool `mapstructure:"convert_urls" json:"convert_urls"`
 
 	// Select Specific
-	Values []string `form:"values" json:"values"`
+	Values []string `mapstructure:"values" json:"values"`
 
 	// Password Specific
-	Cost int `form:"cost" json:"cost"`
+	Cost int `mapstructure:"cost" json:"cost"`
 
 	// Relation Specific
-	CollectionId  string `form:"collectionId" json:"collectionId"`
-	CascadeDelete bool   `form:"cascadeDelete" json:"cascadeDelete"`
+	CollectionId  string `mapstructure:"collection_id" json:"collection_id"`
+	CascadeDelete bool   `mapstructure:"cascade_delete" json:"cascade_delete"`
 }
 
 func (f *FieldConfig) CreateOrUpdate(app *pocketbase.PocketBase, collection *core.Collection) {

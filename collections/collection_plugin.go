@@ -1,17 +1,23 @@
 package collections
 
 import (
+	_ "embed"
+	"encoding/json"
 	"log"
 	"strings"
 
 	"github.com/pocketbase/pocketbase"
 	"github.com/spf13/viper"
+	"github.com/xeipuuv/gojsonschema"
 )
+
+//go:embed collections_schema.json
+var collectionsSchema []byte
 
 type CollectionPluginConfig struct {
 	Enabled                       bool               `mapstructure:"enabled" json:"enabled"`
-	RetainUnconfiguredCollections bool               `mapstructure:"retainUnconfiguredCollections" json:"retainUnconfiguredCollections"`
-	FilterPrefix                  string             `mapstructure:"filterPrefix" json:"filterPrefix"`
+	RetainUnconfiguredCollections bool               `mapstructure:"retain_unconfigured_collections" json:"retain_unconfigured_collections"`
+	FilterPrefix                  string             `mapstructure:"filter_prefix" json:"filter_prefix"`
 	Collections                   []CollectionConfig `mapstructure:"collections" json:"collections"`
 }
 
@@ -22,16 +28,23 @@ func SetupCollections(app *pocketbase.PocketBase, v *viper.Viper) {
 	}
 
 	v.SetDefault("enabled", true)
-	v.SetDefault("retainUnconfiguredCollections", false)
-	v.SetDefault("retainUnconfiguredFields", false)
-	v.SetDefault("filterPrefix", "_")
+	v.SetDefault("retain_unconfigured_collections", false)
+	v.SetDefault("filter_prefix", "_")
 
 	if !v.GetBool("enabled") {
 		return
 	}
 
+	var genericConfig map[string]interface{}
+	err := v.UnmarshalExact(&genericConfig)
+	if err != nil {
+		panic(err)
+	}
+
+	validateSchema(genericConfig)
+
 	pluginConfig := CollectionPluginConfig{}
-	err := v.Unmarshal(&pluginConfig)
+	err = v.Unmarshal(&pluginConfig)
 	if err != nil {
 		panic(err)
 	}
@@ -64,6 +77,31 @@ func SetupCollections(app *pocketbase.PocketBase, v *viper.Viper) {
 	}
 
 	pluginConfig.removeUnusedCollections(app)
+
+}
+
+func validateSchema(rawSchema map[string]interface{}) {
+
+	schemaBytes, err := json.Marshal(rawSchema)
+	if err != nil {
+		log.Panicf("Failed to marshal schema: %v", err)
+	}
+	data := gojsonschema.NewBytesLoader(schemaBytes)
+
+	loader := gojsonschema.NewReferenceLoader("file://./collections/collections_schema.json")
+	result, err := gojsonschema.Validate(loader, data)
+	if err != nil {
+		log.Panicf("Failed to validate collection schema: %v", err)
+	}
+
+	if !result.Valid() {
+		for _, desc := range result.Errors() {
+			log.Printf("- %s\n", desc)
+		}
+		log.Panic("The configuration schema is not valid")
+	}
+
+	log.Println("The collection configuration schema is valid")
 
 }
 
