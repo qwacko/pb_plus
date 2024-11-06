@@ -1,4 +1,5 @@
 {
+  "$id": "https://raw.githubusercontent.com/qwacko/pocketforge/refs/heads/main/collections/schema/collections_schema_fields.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Collections Configuration",
   "type": "object",

@@ -24,7 +24,6 @@
     "collections": {
       "type": "array",
       "items": {
-        "type": "object",
         "oneOf": [
           {
             "type": "object",
@@ -35,35 +34,23 @@
                 "description": "The type of collection. Must be one of the following: 'base','auth',or 'view'.",
                 "enum": ["view"]
               },
+              "id": {
+                "$ref": "#/definitions/table_properties/id"
+              },
+              "name": {
+                "$ref": "#/definitions/table_properties/name"
+              },
+              "editable": {
+                "$ref": "#/definitions/table_properties/editable"
+              },
               "view_query": {
                 "title": "View Query",
                 "type": "string",
                 "description": "The query to use for the view collection. Must be a valid SQL query."
               },
-              "id": {
-                "type": "string",
-                "description": "The collection id. Must be unique across all collections and fields.",
-                "title": "Collection ID",
-                "pattern": "^[a-zA-Z0-9_]+$",
-                "examples": ["user", "email_address"]
-              },
-              "name": {
-                "title": "Collection Name",
-                "type": "string",
-                "description": "The collection name. Must be unique within the collection. Also must have no spaces.",
-                "pattern": "^[a-zA-Z0-9_]+$"
-              },
-              "editable": {
-                "title": "Editable",
-                "description": "If true, then the collection is editable",
-                "type": "boolean",
-                "default": true
-              },
-              "rules": {
-                "$ref": "#/definitions/rules_view"
-              }
+              "rules": { "$ref": "#/definitions/rules_view" }
             },
-            "required": ["id", "name", "type"],
+            "required": ["id", "name", "type", "view_query"],
             "additionalProperties": false
           },
           {
@@ -76,17 +63,13 @@
                 "enum": ["base"]
               },
               "id": {
-                "type": "string",
-                "description": "The collection id. Must be unique across all collections and fields.",
-                "title": "Collection ID",
-                "pattern": "^[a-zA-Z0-9_]+$",
-                "examples": ["user", "email_address"]
+                "$ref": "#/definitions/table_properties/id"
               },
               "name": {
-                "title": "Collection Name",
-                "type": "string",
-                "description": "The collection name. Must be unique within the collection. Also must have no spaces.",
-                "pattern": "^[a-zA-Z0-9_]+$"
+                "$ref": "#/definitions/table_properties/name"
+              },
+              "editable": {
+                "$ref": "#/definitions/table_properties/editable"
               },
               "add_default_fields": {
                 "title": "Add Default Fields",
@@ -94,13 +77,7 @@
                 "type": "boolean",
                 "default": true
               },
-              "editable": {
-                "title": "Editable",
-                "description": "If true, then the collection is editable",
-                "type": "boolean",
-                "default": true
-              },
-              "retainUnconfiguredFields": {
+              "retain_unconfigured_fields": {
                 "title": "Retain Unconfigured Fields",
                 "description": "If true, fields that are not configured will not be removed",
                 "type": "boolean",
@@ -124,8 +101,8 @@
                 }
               }
             },
-            "required": ["id", "name", "type"],
-            "additionalProperties": false
+            "additionalProperties": false,
+            "required": ["id", "name", "type", "fields"]
           }
         ]
       }
@@ -134,6 +111,27 @@
   "required": ["collections"],
   "additionalProperties": false,
   "definitions": {
+    "table_properties": {
+      "id": {
+        "type": "string",
+        "description": "The collection id. Must be unique across all collections and fields.",
+        "title": "Collection ID",
+        "pattern": "^[a-zA-Z0-9_]+$",
+        "examples": ["user", "email_address"]
+      },
+      "name": {
+        "title": "Collection Name",
+        "type": "string",
+        "description": "The collection name. Must be unique within the collection. Also must have no spaces.",
+        "pattern": "^[a-zA-Z0-9_]+$"
+      },
+      "editable": {
+        "title": "Editable",
+        "description": "If true, then the collection is editable",
+        "type": "boolean",
+        "default": true
+      }
+    },
     "index": {
       "type": "object",
       "properties": {

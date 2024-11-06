@@ -4,7 +4,7 @@
   "type": "object",
   "properties": {
     "collections": {
-      "$ref": "collections/collections_schema.json"
+      "$ref": "collections/schema/collections_schema.json"
     }
   },
   "additionalProperties": false
