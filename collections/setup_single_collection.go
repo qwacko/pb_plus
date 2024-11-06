@@ -28,7 +28,11 @@ type CollectionConfig struct {
 	AddDefaultFields         bool          `mapstructure:"addDefaultFields" json:"addDefaultFields"`
 	RetainUnconfiguredFields bool          `mapstructure:"retainUnconfiguredFields" json:"retainUnconfiguredFields"`
 	Fields                   []FieldConfig `mapstructure:"fields" json:"fields"`
+	Indexes                  []IndexConfig `mapstructure:"indexes" json:"indexes"`
 	collection               *core.Collection
+
+	//View Specific Options
+	ViewQuery string `mapstructure:"viewQuery" json:"viewQuery"`
 }
 
 func (configuration *CollectionConfig) CreateOrUpdateCollection(app *pocketbase.PocketBase) {
@@ -52,25 +56,115 @@ func (configuration *CollectionConfig) CreateOrUpdateCollection(app *pocketbase.
 		return
 	}
 
-	_, err := app.FindCollectionByNameOrId(configuration.ID)
-	if err != nil {
-		if configuration.Type == "base" {
-			configuration.collection = core.NewBaseCollection(configuration.Name)
-		} else if configuration.Type == "view" {
-			configuration.collection = core.NewViewCollection(configuration.Name)
-		} else if configuration.Type == "auth" {
-			configuration.collection = core.NewAuthCollection(configuration.Name)
-		}
+	if configuration.Type == "base" {
+		configuration.createOrUpdateBaseCollection(app)
+	}
 
-		// Whether the collection is a system collection is always set to false
-		// As setting to true means it cannot be removed or updated which is problematic.
+	if configuration.Type == "view" {
+		configuration.createOrUpdateViewCollection(app)
+	}
+
+	_, err := configuration.refreshCollection(app)
+	if err != nil {
+		log.Panicf("Failed to find collection after creation: %v", err)
+	}
+
+}
+
+func (configuration *CollectionConfig) saveAndRefreshCollection(app *pocketbase.PocketBase) (*core.Collection, error) {
+	app.Save(configuration.collection)
+	return configuration.refreshCollection(app)
+}
+
+func (configuration *CollectionConfig) createOrUpdateBaseCollection(app *pocketbase.PocketBase) {
+
+	collection, err := configuration.getCollection(app)
+	if err != nil {
+		configuration.collection = core.NewBaseCollection(configuration.Name)
 		configuration.collection.System = false
 		configuration.collection.Id = configuration.ID
+		_, err := configuration.saveAndRefreshCollection(app)
+		if err != nil {
+			log.Panicf("Failed to create base collection: %v", err)
+		}
+	} else {
+		configuration.collection = collection
+	}
 
-		app.Save(configuration.collection)
+	collection, err = configuration.getCollection(app)
+	if err != nil {
+		log.Panicf("Base Collection %s not found", configuration.Name)
+	}
+
+	configuration.collection = collection
+
+	if configuration.collection.Type != "base" {
+		app.Delete(configuration.collection)
+		configuration.createOrUpdateBaseCollection(app)
+	}
+
+	if configuration.collection.Name != configuration.Name {
+		configuration.collection.Name = configuration.Name
+		_, err := configuration.saveAndRefreshCollection(app)
+		if err != nil {
+			log.Panicf("Failed to update collection name for collection %s", configuration.Name)
+		}
 	}
 
 	configuration.updateCollectionSettings(app)
+	configuration.UpdateFields(app)
+	configuration.updateRules(app)
+	configuration.updateIndexes(app)
+	configuration.lockCollection(app)
+
+}
+
+func (configuration *CollectionConfig) createOrUpdateViewCollection(app *pocketbase.PocketBase) {
+
+	collection, err := configuration.refreshCollection(app)
+	if err != nil {
+		configuration.collection = core.NewViewCollection(configuration.Name)
+		configuration.collection.System = false
+		configuration.collection.Id = configuration.ID
+		configuration.collection.ViewQuery = configuration.ViewQuery
+		_, err := configuration.saveAndRefreshCollection(app)
+		if err != nil {
+			log.Panicf("Failed to createview collection: %v. Possibly query is incorrect.", err)
+		}
+	} else {
+		configuration.collection = collection
+	}
+
+	_, err = configuration.refreshCollection(app)
+	if err != nil {
+		log.Println("Failed to find collection after creation", err)
+		log.Panicf("View Collection %s not found", configuration.Name)
+	}
+
+	if configuration.collection.Type != "view" {
+		app.Delete(configuration.collection)
+		configuration.createOrUpdateViewCollection(app)
+	}
+
+	if configuration.collection.ViewQuery != configuration.ViewQuery {
+		configuration.collection.ViewQuery = configuration.ViewQuery
+		_, err := configuration.saveAndRefreshCollection(app)
+		if err != nil {
+			log.Panicf("Failed to update view query for collection %s", configuration.Name)
+		}
+		if configuration.collection.ViewQuery != configuration.ViewQuery {
+			log.Panicf("Failed to update view query for collection %s", configuration.Name)
+		}
+	}
+
+	if configuration.collection.Name != configuration.Name {
+		configuration.collection.Name = configuration.Name
+		_, err := configuration.saveAndRefreshCollection(app)
+		if err != nil {
+			log.Panicf("Failed to update collection name for collection %s", configuration.Name)
+		}
+	}
+
 	configuration.updateRules(app)
 	configuration.lockCollection(app)
 
@@ -87,17 +181,31 @@ func (configuration *CollectionConfig) CreateOrUpdateCollection(app *pocketbase.
 //
 // Returns:
 //   - A pointer to the core.Collection instance.
-func (configuration *CollectionConfig) getCollection(app *pocketbase.PocketBase) *core.Collection {
+func (configuration *CollectionConfig) getCollection(app *pocketbase.PocketBase) (*core.Collection, error) {
 	if configuration.collection != nil {
-		return configuration.collection
+		return configuration.collection, nil
 	}
 
 	collection, err := app.FindCollectionByNameOrId(configuration.ID)
 	if err != nil {
-		log.Panicf("Collection %s not found", configuration.ID)
+		return nil, fmt.Errorf("Collection %s not found", configuration.ID)
 	}
 	configuration.collection = collection
-	return collection
+	return collection, nil
+}
+
+func (configuration *CollectionConfig) refreshCollection(app *pocketbase.PocketBase) (*core.Collection, error) {
+
+	configuration.collection = nil
+	collection, err := configuration.getCollection(app)
+	if err != nil {
+		return nil, err
+	}
+
+	configuration.collection = collection
+
+	return collection, nil
+
 }
 
 // updateCollectionSettings updates the settings of a collection in the PocketBase application.
@@ -110,13 +218,18 @@ func (configuration *CollectionConfig) getCollection(app *pocketbase.PocketBase)
 // Note: This function assumes that the CollectionConfig struct has a method getCollection that retrieves the collection from the PocketBase application.
 func (configuration *CollectionConfig) updateCollectionSettings(app *pocketbase.PocketBase) {
 
-	collection := configuration.getCollection(app)
-
-	if collection.Name != configuration.Name {
-		collection.Name = configuration.Name
-		app.Save(collection)
+	_, err := configuration.refreshCollection(app)
+	if err != nil {
+		log.Panicf("Failed to find collection: %v", err)
 	}
 
+	if configuration.collection.Name != configuration.Name {
+		configuration.collection.Name = configuration.Name
+		_, err := configuration.saveAndRefreshCollection(app)
+		if err != nil {
+			log.Panicf("Failed to update collection name for collection %s", configuration.Name)
+		}
+	}
 }
 
 // updateRules updates the rules of a collection in the PocketBase application.
@@ -174,7 +287,10 @@ func (configuration *CollectionConfig) updateRules(app *pocketbase.PocketBase) {
 	}
 
 	if changed {
-		app.Save(configuration.collection)
+		_, err := configuration.saveAndRefreshCollection(app)
+		if err != nil {
+			log.Panicf("Failed to update collection rules for collection %s: %v", configuration.Name, err)
+		}
 	}
 }
 
@@ -200,7 +316,14 @@ func (configuration *CollectionConfig) lockCollection(app *pocketbase.PocketBase
 
 func (configuration *CollectionConfig) UpdateFields(app *pocketbase.PocketBase) {
 
-	collection := configuration.getCollection(app)
+	if configuration.Type == "view" {
+		return
+	}
+
+	collection, err := configuration.getCollection(app)
+	if err != nil {
+		log.Panicf("Failed to find collection: %v", err)
+	}
 	for _, fieldConfig := range configuration.Fields {
 		fieldConfig.CreateOrUpdate(app, collection)
 	}
@@ -247,7 +370,6 @@ func (configuration *CollectionConfig) removeUnusedFields(app *pocketbase.Pocket
 
 	fields := configuration.collection.Fields
 
-	changed := false
 	var default_fields []string
 
 	if configuration.AddDefaultFields {
@@ -289,12 +411,53 @@ func (configuration *CollectionConfig) removeUnusedFields(app *pocketbase.Pocket
 		}
 
 		if !found {
+			log.Printf("Removing field %s from collection %s", field.GetName(), configuration.Name)
 			configuration.collection.Fields.RemoveById(field.GetId())
-			changed = true
+			configuration.saveAndRefreshCollection(app)
 		}
 	}
 
-	if changed {
-		app.Save(configuration.collection)
+}
+
+func (configuration *CollectionConfig) RemoveIndexes(app *pocketbase.PocketBase) {
+
+	_, err := configuration.refreshCollection(app)
+	if err != nil {
+		return
 	}
+
+	tableIndexes, _ := app.TableIndexes(configuration.collection.Name)
+
+	for index_id := range tableIndexes {
+		configuration.collection.RemoveIndex(index_id)
+	}
+
+	configuration.saveAndRefreshCollection(app)
+
+}
+
+func (configuration *CollectionConfig) updateIndexes(app *pocketbase.PocketBase) {
+
+	_, err := configuration.refreshCollection(app)
+	if err != nil {
+		log.Panicf("Failed to find collection: %v", err)
+	}
+
+	// If there are no indexes in the configuration, make no updates
+	if len(configuration.Indexes) == 0 {
+		return
+	}
+
+	configuration.RemoveIndexes(app)
+
+	for _, indexConfig := range configuration.Indexes {
+		index_details := indexConfig.getIndexQuery(configuration.collection)
+		configuration.collection.AddIndex(index_details.Name, index_details.Unique, index_details.ColumnExpr, "")
+	}
+
+	_, err = configuration.saveAndRefreshCollection(app)
+	if err != nil {
+		log.Panicf("Failed to update collection indexes for collection %s: %v", configuration.Name, err)
+	}
+
 }

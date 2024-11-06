@@ -31,8 +31,6 @@ func overrideCollections(app *pocketbase.PocketBase, v *viper.Viper) error {
 		log.Fatalf("Error unmarshalling collection overrides: %v", err)
 	}
 
-	log.Println("Processing collection overrides", overrides)
-
 	for _, override := range overrides {
 		if err := override.ProcessCollectionOverride(app); err != nil {
 			return fmt.Errorf("error processing collection override: %v", err)

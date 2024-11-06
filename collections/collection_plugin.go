@@ -36,11 +36,24 @@ func SetupCollections(app *pocketbase.PocketBase, v *viper.Viper) {
 		panic(err)
 	}
 
-	log.Println("Collections Plugin Configuration : ", pluginConfig)
+	// First we need to remove all teh indexes to allow removal of indexed fields.
+	for _, collectionConfig := range pluginConfig.Collections {
+		collectionConfig.RemoveIndexes(app)
+	}
 
 	// First create collections and then create fields to ensure the collections exist prior to creating any reference fields.
 	for _, collectionConfig := range pluginConfig.Collections {
+		if collectionConfig.Type == "view" {
+			continue
+		}
 		collectionConfig.CreateOrUpdateCollection(app)
+	}
+
+	// Create View Collections
+	for _, collectionConfig := range pluginConfig.Collections {
+		if collectionConfig.Type == "view" {
+			collectionConfig.CreateOrUpdateCollection(app)
+		}
 	}
 
 	for _, collectionConfig := range pluginConfig.Collections {
@@ -114,7 +127,6 @@ func (config *CollectionPluginConfig) removeUnusedCollections(app *pocketbase.Po
 				log.Panicf("Failed to find collection %s: %v", collection.Name, err)
 			}
 			app.Delete(collection)
-			log.Printf("Removed unused collection %s", collection.Name)
 		}
 	}
 }

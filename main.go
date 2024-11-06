@@ -20,7 +20,10 @@ import (
 )
 
 func main() {
-	app := pocketbase.New()
+
+	app := pocketbase.NewWithConfig(pocketbase.Config{
+		DefaultDev: false,
+	})
 
 	// Load configuration
 	v, err := config.LoadConfig()
