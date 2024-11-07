@@ -1,18 +1,12 @@
 package collections
 
 import (
-	"embed"
-	"encoding/json"
 	"log"
 	"strings"
 
 	"github.com/pocketbase/pocketbase"
 	"github.com/spf13/viper"
-	"github.com/xeipuuv/gojsonschema"
 )
-
-//go:embed schema/*
-var content embed.FS
 
 type CollectionPluginConfig struct {
 	Enabled                       bool               `mapstructure:"enabled" json:"enabled"`
@@ -35,16 +29,8 @@ func SetupCollections(app *pocketbase.PocketBase, v *viper.Viper) {
 		return
 	}
 
-	var genericConfig map[string]interface{}
-	err := v.UnmarshalExact(&genericConfig)
-	if err != nil {
-		panic(err)
-	}
-
-	validateSchema(genericConfig)
-
 	pluginConfig := CollectionPluginConfig{}
-	err = v.Unmarshal(&pluginConfig)
+	err := v.Unmarshal(&pluginConfig)
 	if err != nil {
 		panic(err)
 	}
@@ -77,88 +63,6 @@ func SetupCollections(app *pocketbase.PocketBase, v *viper.Viper) {
 	}
 
 	pluginConfig.removeUnusedCollections(app)
-
-}
-
-func loadSchemaToJSON(schemaPath string) map[string]interface{} {
-	schemaBytes, err := content.ReadFile(schemaPath)
-	if err != nil {
-		log.Panicf("Failed to read schema: %v", err)
-	}
-	var schema map[string]interface{}
-	err = json.Unmarshal(schemaBytes, &schema)
-	if err != nil {
-		log.Panicf("Failed to unmarshal schema: %v", err)
-	}
-	return schema
-}
-
-func schemaToString(schema map[string]interface{}) string {
-	schemaBytes, err := json.Marshal(schema)
-	if err != nil {
-		log.Panicf("Failed to marshal schema: %v", err)
-	}
-	return string(schemaBytes)
-}
-
-func replaceRefWithIdInSchema(schema map[string]interface{}, ref string, id string) {
-	for key, value := range schema {
-		if key == "$ref" {
-			if value == ref {
-				schema["$id"] = id
-				delete(schema, "$ref")
-			}
-		}
-		// If the value is a map, we need to recurse
-		if valueMap, ok := value.(map[string]interface{}); ok {
-			replaceRefWithIdInSchema(valueMap, ref, id)
-		}
-		// If the value is a slice, we need to iterate and recurse
-		if valueSlice, ok := value.([]interface{}); ok {
-			for _, item := range valueSlice {
-				if itemMap, ok := item.(map[string]interface{}); ok {
-					replaceRefWithIdInSchema(itemMap, ref, id)
-				}
-			}
-		}
-	}
-}
-
-func validateSchema(rawSchema map[string]interface{}) {
-
-	// Load the schema files
-	schema_map := loadSchemaToJSON("schema/collections_schema.json")
-	schema_fields_map := loadSchemaToJSON("schema/collections_schema_fields.json")
-
-	// Replace the $ref with $id in the schema files
-	replaceRefWithIdInSchema(schema_map, "collections_schema_fields.json", "https://raw.githubusercontent.com/qwacko/pocketforge/refs/heads/main/collections/schema/collections_schema_fields.json")
-
-	// Validate the schema
-	schemaLoader := gojsonschema.NewStringLoader(schemaToString(schema_map))
-	schemaFieldsLoader := gojsonschema.NewStringLoader(schemaToString(schema_fields_map))
-	data := gojsonschema.NewStringLoader(schemaToString(rawSchema))
-
-	schema := gojsonschema.NewSchemaLoader()
-	schema.AddSchemas(schemaFieldsLoader)
-	validated_schema, err := schema.Compile(schemaLoader)
-
-	if err != nil {
-		log.Panicf("Failed to compile schema: %v", err)
-	}
-
-	result, err := validated_schema.Validate(data)
-	if err != nil {
-		log.Panicf("Failed to validate collection schema: %v", err)
-	}
-
-	if !result.Valid() {
-		for _, desc := range result.Errors() {
-			log.Printf("- %s\n", desc)
-		}
-		log.Panic("The configuration schema is not valid")
-	}
-
-	log.Println("The collection configuration schema is valid")
 
 }
 

@@ -1,0 +1,251 @@
+{
+  "$id": "https://raw.githubusercontent.com/qwacko/pocketforge/refs/heads/main/jsonschema/schema/collections/collections_schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Collections Configuration",
+  "type": "object",
+  "properties": {
+    "enabled": {
+      "title": "Enabled",
+      "description": "If false, then this functionality is disabled. If missing then defaults to true",
+      "type": "boolean",
+      "default": true
+    },
+    "retain_unconfigured_collections": {
+      "title": "Retain Unconfigured Collections",
+      "description": "If true, collections that are not configured will not be removed",
+      "type": "boolean",
+      "default": false
+    },
+    "filter_prefix": {
+      "title": "Filter Prefix",
+      "description": "Ignores collections that do not start with this prefix when removing unconfigured collections",
+      "type": "string",
+      "default": "_"
+    },
+    "collections": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "title": "Collection Type",
+                "type": "string",
+                "description": "The type of collection. Must be one of the following: 'base','auth',or 'view'.",
+                "enum": ["view"]
+              },
+              "id": {
+                "$ref": "#/definitions/table_properties/id"
+              },
+              "name": {
+                "$ref": "#/definitions/table_properties/name"
+              },
+              "editable": {
+                "$ref": "#/definitions/table_properties/editable"
+              },
+              "view_query": {
+                "title": "View Query",
+                "type": "string",
+                "description": "The query to use for the view collection. Must be a valid SQL query."
+              },
+              "rules": { "$ref": "#/definitions/rules_view" }
+            },
+            "required": ["id", "name", "type", "view_query"],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "title": "Collection Type",
+                "type": "string",
+                "description": "The type of collection. Must be one of the following: 'base','auth',or 'view'.",
+                "enum": ["base"]
+              },
+              "id": {
+                "$ref": "#/definitions/table_properties/id"
+              },
+              "name": {
+                "$ref": "#/definitions/table_properties/name"
+              },
+              "editable": {
+                "$ref": "#/definitions/table_properties/editable"
+              },
+              "add_default_fields": {
+                "title": "Add Default Fields",
+                "description": "If true, then the default fields will be added to the collection",
+                "type": "boolean",
+                "default": true
+              },
+              "retain_unconfigured_fields": {
+                "title": "Retain Unconfigured Fields",
+                "description": "If true, fields that are not configured will not be removed",
+                "type": "boolean",
+                "default": false
+              },
+              "rules": { "$ref": "#/definitions/rules_edit" },
+              "indexes": {
+                "type": "array",
+                "title": "Indexes",
+                "minItems": 1,
+                "description": "The indexes to create on the collection",
+                "items": { "$ref": "#/definitions/index" }
+              },
+              "fields": {
+                "type": "array",
+                "title": "Collection Fields",
+                "minItems": 1,
+                "description": "List of all fields to create in the collection.",
+                "items": {
+                  "$ref": "collections_schema_fields.json"
+                }
+              }
+            },
+            "additionalProperties": false,
+            "required": ["id", "name", "type", "fields"]
+          }
+        ]
+      }
+    }
+  },
+  "required": ["collections"],
+  "additionalProperties": false,
+  "definitions": {
+    "table_properties": {
+      "id": {
+        "type": "string",
+        "description": "The collection id. Must be unique across all collections and fields.",
+        "title": "Collection ID",
+        "pattern": "^[a-zA-Z0-9_]+$",
+        "examples": ["user", "email_address"]
+      },
+      "name": {
+        "title": "Collection Name",
+        "type": "string",
+        "description": "The collection name. Must be unique within the collection. Also must have no spaces.",
+        "pattern": "^[a-zA-Z0-9_]+$"
+      },
+      "editable": {
+        "title": "Editable",
+        "description": "If true, then the collection is editable",
+        "type": "boolean",
+        "default": true
+      }
+    },
+    "index": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The index id. Must be unique across all indexes.",
+          "title": "Index ID",
+          "pattern": "^[a-zA-Z0-9_]+$"
+        },
+        "unique": {
+          "type": "boolean",
+          "description": "If true, then the index is unique"
+        },
+        "fields": {
+          "type": "array",
+          "title": "Fields",
+          "description": "The fields to index. Refers to the field name in the collection. Can be multiple fields.",
+          "items": {
+            "type": "string",
+            "description": "The field to index"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": ["id", "fields"]
+    },
+    "rules_view": {
+      "type": "object",
+      "properties": {
+        "list_rule": {
+          "title": "List Rule",
+          "type": "string",
+          "description": "The rule to use for listing records in the collection. Aligns with Pocketbase rules."
+        },
+        "view_rule": {
+          "title": "View Rule",
+          "type": "string",
+          "description": "The rule to use for viewing a single record in the collection. Aligns with Pocketbase rules."
+        }
+      },
+      "additionalProperties": false
+    },
+    "rules_edit": {
+      "type": "object",
+      "properties": {
+        "list_rule": {
+          "title": "List Rule",
+          "type": "string",
+          "description": "The rule to use for listing records in the collection. Aligns with Pocketbase rules."
+        },
+        "view_rule": {
+          "title": "View Rule",
+          "type": "string",
+          "description": "The rule to use for viewing a single record in the collection. Aligns with Pocketbase rules."
+        },
+        "create_rule": {
+          "title": "Create Rule",
+          "type": "string",
+          "description": "The rule to use for creating records in the collection. Aligns with Pocketbase rules."
+        },
+        "update_rule": {
+          "title": "Update Rule",
+          "type": "string",
+          "description": "The rule to use for updating records in the collection. Aligns with Pocketbase rules."
+        },
+        "delete_rule": {
+          "title": "Delete Rule",
+          "type": "string",
+          "description": "The rule to use for deleting records in the collection. Aligns with Pocketbase rules."
+        }
+      },
+      "additionalProperties": false
+    },
+    "rules_auth": {
+      "type": "object",
+      "properties": {
+        "list_rule": {
+          "title": "List Rule",
+          "type": "string",
+          "description": "The rule to use for listing records in the collection. Aligns with Pocketbase rules."
+        },
+        "view_rule": {
+          "title": "View Rule",
+          "type": "string",
+          "description": "The rule to use for viewing a single record in the collection. Aligns with Pocketbase rules."
+        },
+        "create_rule": {
+          "title": "Create Rule",
+          "type": "string",
+          "description": "The rule to use for creating records in the collection. Aligns with Pocketbase rules."
+        },
+        "update_rule": {
+          "title": "Update Rule",
+          "type": "string",
+          "description": "The rule to use for updating records in the collection. Aligns with Pocketbase rules."
+        },
+        "delete_rule": {
+          "title": "Delete Rule",
+          "type": "string",
+          "description": "The rule to use for deleting records in the collection. Aligns with Pocketbase rules."
+        },
+        "auth_rule": {
+          "title": "Auth Rule",
+          "type": "string",
+          "description": "Rule for authenticating against the collection. Aligns with Pocketbase rules."
+        },
+        "manage_rule": {
+          "title": "Manage Rule",
+          "type": "string",
+          "description": "Rule for who can fully manage the auth (i.e. change password without entering current password). Aligns with Pocketbase rules."
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

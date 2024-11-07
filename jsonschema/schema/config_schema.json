@@ -1,0 +1,12 @@
+{
+  "$id": "https://raw.githubusercontent.com/qwacko/pocketforge/refs/heads/main/jsonschema/schema/config_schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Collections Configuration",
+  "type": "object",
+  "properties": {
+    "collections": {
+      "$ref": "collections/collections_schema.json"
+    }
+  },
+  "additionalProperties": false
+}
