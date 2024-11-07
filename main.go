@@ -32,33 +32,35 @@ func main() {
 		log.Fatalf("Error loading config: %v", err)
 	}
 
+	// Validate configuration
+	jsonschema.BuildSchemaAndValidate(v)
+
 	// ---------------------------------------------------------------
 	// Plugins and hooks:
 	// ---------------------------------------------------------------
-
 	ghupdate.MustRegister(app, app.RootCmd, ghupdate.Config{Owner: "qwacko", Repo: "pocketforge"})
 
 	// load jsvm (pb_hooks and pb_migrations)
 	jsvm.MustRegister(app, jsvm.Config{
-		MigrationsDir: v.GetString("migrationsDir"),
-		HooksDir:      v.GetString("hooksDir"),
-		HooksWatch:    v.GetBool("hooksWatch"),
-		HooksPoolSize: v.GetInt("hooksPool"),
+		MigrationsDir: v.GetString("settings.migrations_dir"),
+		HooksDir:      v.GetString("settings.hooks_dir"),
+		HooksWatch:    v.GetBool("settings.hooks_watch"),
+		HooksPoolSize: v.GetInt("settings.hooks_pool"),
 	})
 
 	// migrate command (with js templates)
 	migratecmd.MustRegister(app, app.RootCmd, migratecmd.Config{
 		TemplateLang: migratecmd.TemplateLangJS,
-		Automigrate:  v.GetBool("automigrate"),
-		Dir:          v.GetString("migrationsDir"),
+		Automigrate:  v.GetBool("settings.automigrate"),
+		Dir:          v.GetString("settings.migrations_dir"),
 	})
 
 	// static route to serves files from the provided public dir
 	// (if publicDir exists and the route path is not already defined)
 	app.OnServe().Bind(&hook.Handler[*core.ServeEvent]{
 		Func: func(e *core.ServeEvent) error {
-			publicDir := v.GetString("publicDir")
-			indexFallback := v.GetBool("indexFallback")
+			publicDir := v.GetString("settings.public_dir")
+			indexFallback := v.GetBool("settings.index_fallback")
 			if !e.Router.HasRoute(http.MethodGet, "/{path...}") {
 				e.Router.GET("/{path...}", apis.Static(os.DirFS(publicDir), indexFallback))
 			}
@@ -67,8 +69,6 @@ func main() {
 		},
 		Priority: 999, // execute as latest as possible to allow users to provide their own route
 	})
-
-	jsonschema.BuildSchemaAndValidate(v)
 
 	// Configure schema validation
 	validation.ConfigureSchemaValidation(app, v)

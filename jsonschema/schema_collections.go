@@ -20,6 +20,7 @@ func BuildSchema() (*gojsonschema.Schema, error) {
 	collections_schema_fields_filename := "collections_schema_fields.json"
 	superusers_schema_location := "superuser/superuser_schema.json"
 	validation_schema_location := "validation/validation_schema.json"
+	settings_schema_location := "settings/settings_schema.json"
 
 	var schemaConfig = SchemaDefinition{
 		CoreSchema: SingleSchema{
@@ -36,6 +37,10 @@ func BuildSchema() (*gojsonschema.Schema, error) {
 				{
 					Ref: validation_schema_location,
 					Id:  resultPrefix + validation_schema_location,
+				},
+				{
+					Ref: settings_schema_location,
+					Id:  resultPrefix + settings_schema_location,
 				},
 			},
 		},
@@ -59,6 +64,10 @@ func BuildSchema() (*gojsonschema.Schema, error) {
 			},
 			{
 				Filename:     "schema/" + validation_schema_location,
+				Replacements: []SchemaReplacement{},
+			},
+			{
+				Filename:     "schema/" + settings_schema_location,
 				Replacements: []SchemaReplacement{},
 			},
 		},
@@ -92,9 +101,12 @@ func BuildSchemaAndValidate(v *viper.Viper) {
 	}
 
 	if !result.Valid() {
+		log.Println("The configuration schema is not valid")
 		for _, desc := range result.Errors() {
 			log.Printf("- %s\n", desc)
 		}
 		log.Panic("The configuration schema is not valid")
 	}
+
+	log.Println("The configuration schema is valid")
 }

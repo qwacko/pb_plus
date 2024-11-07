@@ -1,5 +1,5 @@
 {
-  "$id": "https://raw.githubusercontent.com/qwacko/pocketforge/refs/heads/main/jsonschema/schema/validation/validation_schema.json",
+  "$id": "https://raw.githubusercontent.com/qwacko/pocketforge/refs/heads/main/jsonschema/schema/settings/settings_schema.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Validation Configuration.",
   "description": "Used to enable and configuration functionality to allow for json schema validation of specific collection fields.",

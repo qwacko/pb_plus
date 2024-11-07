@@ -20,15 +20,14 @@ The application functions exactly like the base PocketBase application (other th
 
 Configuration can be read from a TOML file, YAML file, JSON file, or environment variables. The configuration is with the following precedence (first in the list overrides later):
 
-1. Command Line Flags (only options from the core pocketbase application are available through the command line)
-2. Environment variables
-3. One Of the following (only the first one found will be used):
+1. Environment variables
+2. One Of the following (only the first one found will be used):
 
    - TOML file (./config.toml)
    - YAML file (./config.yaml)
    - JSON file (./config.json)
 
-All the configuration that is available in the base PocketBase application is also available in Pocketforge.
+Configuration parameters from pocketbase are supported in pocketforge,however they are in a `settings` tree (i.e. `settings.automigrate` instead of `automigrate`).
 
 ## Example Configuration Files
 

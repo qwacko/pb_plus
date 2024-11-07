@@ -5,7 +5,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
 
@@ -25,24 +24,13 @@ func LoadConfig() (*viper.Viper, error) {
 	}
 
 	// Set default values
-	v.SetDefault("hooksDir", defaultHooksDir())
-	v.SetDefault("hooksWatch", true)
-	v.SetDefault("hooksPool", 15)
-	v.SetDefault("migrationsDir", defaultMigrationsDir())
-	v.SetDefault("automigrate", true)
-	v.SetDefault("publicDir", defaultPublicDir())
-	v.SetDefault("indexFallback", true)
-
-	// Bind command line flags
-	pflag.String("hooksDir", defaultHooksDir(), "the directory with the JS app hooks")
-	pflag.Bool("hooksWatch", true, "auto restart the app on pb_hooks file change")
-	pflag.Int("hooksPool", 15, "the total prewarm goja.Runtime instances for the JS app hooks execution")
-	pflag.String("migrationsDir", defaultMigrationsDir(), "the directory with the user defined migrations")
-	pflag.Bool("automigrate", true, "enable/disable auto migrations")
-	pflag.String("publicDir", defaultPublicDir(), "the directory to serve static files")
-	pflag.Bool("indexFallback", true, "fallback the request to index.html on missing static path (eg. when pretty urls are used with SPA)")
-	pflag.Parse()
-	v.BindPFlags(pflag.CommandLine)
+	v.SetDefault("settings.hooks_dir", defaultHooksDir())
+	v.SetDefault("settings.hooks_watch", true)
+	v.SetDefault("settings.hooks_pool", 15)
+	v.SetDefault("settings.migrations_dir", defaultMigrationsDir())
+	v.SetDefault("settings.automigrate", true)
+	v.SetDefault("settings.public_dir", defaultPublicDir())
+	v.SetDefault("settings.index_fallback", true)
 
 	return v, nil
 }

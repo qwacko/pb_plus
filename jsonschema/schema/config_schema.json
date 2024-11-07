@@ -12,6 +12,9 @@
     },
     "validation": {
       "$ref": "validation/validation_schema.json"
+    },
+    "settings": {
+      "$ref": "settings/settings_schema.json"
     }
   },
   "additionalProperties": false

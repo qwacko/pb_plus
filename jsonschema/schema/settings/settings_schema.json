@@ -1,0 +1,52 @@
+{
+  "$id": "https://raw.githubusercontent.com/qwacko/pocketforge/refs/heads/main/jsonschema/schema/settings/settings_schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Program Settings",
+  "description": "Settings for the program. Mostly based on pocketbase settings",
+  "type": "object",
+  "properties": {
+    "migrations_dir": {
+      "title": "Migrations Directory",
+      "type": "string",
+      "description": "The directory that migrations are stored.",
+      "default": "./pb_migrations"
+    },
+    "hooks_dir": {
+      "title": "Hooks Directory",
+      "type": "string",
+      "description": "The directory that hooks are stored.",
+      "default": "./pb_hooks"
+    },
+    "hooks_watch": {
+      "title": "Watch Hooks",
+      "type": "boolean",
+      "description": "Watch the hooks directory for changes.",
+      "default": true
+    },
+    "hooks_pool_size": {
+      "title": "Hooks Pool Size",
+      "type": "integer",
+      "description": "The number of threads to use for hooks.",
+      "default": 5
+    },
+    "automigrate": {
+      "title": "Automigrate",
+      "type": "boolean",
+      "description": "Automigrate specifies whether to enable automigrations.",
+      "default": false
+    },
+    "public_dir": {
+      "title": "Public Directory",
+      "type": "string",
+      "description": "The directory that public files are stored.",
+      "default": "./pb_public"
+    },
+    "index_fallback": {
+      "title": "Index Fallback",
+      "type": "boolean",
+      "description": "Set true to server index.html for all not found resources. Useful for SPA applications.",
+      "default": false
+    }
+  },
+  "additionalProperties": false
+}
