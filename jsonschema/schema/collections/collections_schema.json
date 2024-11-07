@@ -104,6 +104,60 @@
             },
             "additionalProperties": false,
             "required": ["id", "name", "type", "fields"]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "title": "Collection Type",
+                "type": "string",
+                "description": "The type of collection. Must be one of the following: 'base','auth',or 'view'.",
+                "enum": ["auth"]
+              },
+              "id": {
+                "$ref": "#/definitions/table_properties/id"
+              },
+              "name": {
+                "$ref": "#/definitions/table_properties/name"
+              },
+              "editable": {
+                "$ref": "#/definitions/table_properties/editable"
+              },
+              "add_default_fields": {
+                "title": "Add Default Fields",
+                "description": "If true, then the default fields will be added to the collection",
+                "type": "boolean",
+                "default": true
+              },
+              "retain_unconfigured_fields": {
+                "title": "Retain Unconfigured Fields",
+                "description": "If true, fields that are not configured will not be removed",
+                "type": "boolean",
+                "default": false
+              },
+              "rules": { "$ref": "#/definitions/rules_auth" },
+              "indexes": {
+                "type": "array",
+                "title": "Indexes",
+                "minItems": 1,
+                "description": "The indexes to create on the collection",
+                "items": { "$ref": "#/definitions/index" }
+              },
+              "fields": {
+                "type": "array",
+                "title": "Collection Fields",
+                "minItems": 1,
+                "description": "List of all fields to create in the collection.",
+                "items": {
+                  "$ref": "collections_schema_fields.json"
+                }
+              },
+              "auth": {
+                "$ref": "collections_schema_auth.json"
+              }
+            },
+            "additionalProperties": false,
+            "required": ["id", "name", "type", "fields"]
           }
         ]
       }

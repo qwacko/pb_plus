@@ -1,6 +1,7 @@
 package collections
 
 import (
+	"fmt"
 	"log"
 	"strings"
 
@@ -60,6 +61,14 @@ func SetupCollections(app *pocketbase.PocketBase, v *viper.Viper) {
 
 	for _, collectionConfig := range pluginConfig.Collections {
 		collectionConfig.UpdateFields(app)
+	}
+
+	//Update Auth Collection Details
+	for id, collectionConfig := range pluginConfig.Collections {
+		if collectionConfig.Type == "auth" {
+			vAuth := v.Sub(fmt.Sprintf("collections.%v.auth", id))
+			collectionConfig.ConfigAuth(app, vAuth)
+		}
 	}
 
 	pluginConfig.removeUnusedCollections(app)

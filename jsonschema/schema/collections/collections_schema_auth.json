@@ -1,0 +1,107 @@
+{
+  "$id": "https://raw.githubusercontent.com/qwacko/pocketforge/refs/heads/main/jsonschema/schema/collections/collections_schema_auth.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "auth_alert": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "email_template": { "$ref": "#/definitions/EmailTemplateConfig" }
+      },
+      "additionalProperties": false
+    },
+    "auth_token": { "$ref": "#/definitions/TokenConfig" },
+    "confirm_email_change_template": {
+      "$ref": "#/definitions/EmailTemplateConfig"
+    },
+    "email_change_token": { "$ref": "#/definitions/TokenConfig" },
+    "file_token": { "$ref": "#/definitions/TokenConfig" },
+    "mfa": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "duration": { "type": "integer" },
+        "rule": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "otp": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "duration": { "type": "integer" },
+        "length": { "type": "integer" },
+        "email_template": { "$ref": "#/definitions/EmailTemplateConfig" }
+      },
+      "additionalProperties": false
+    },
+    "password_auth": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "identity_fields": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "password_reset_token": { "$ref": "#/definitions/TokenConfig" },
+    "reset_pasword_template": { "$ref": "#/definitions/EmailTemplateConfig" },
+    "verification_template": { "$ref": "#/definitions/EmailTemplateConfig" },
+    "verification_token": { "$ref": "#/definitions/TokenConfig" },
+    "oauth": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "mapped_fields": {
+          "type": "object",
+          "properties": {
+            "avatar_url": { "type": "string" },
+            "id": { "type": "string" },
+            "name": { "type": "string" },
+            "username": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "providers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "client_id": { "type": "string" },
+              "client_secret": { "type": "string" },
+              "auth_url": { "type": "string" },
+              "token_url": { "type": "string" },
+              "user_info_url": { "type": "string" },
+              "display_name": { "type": "string" },
+              "extra": { "type": "object" },
+              "pkce": { "type": "boolean" }
+            },
+            "required": ["name", "client_id", "client_secret"],
+            "additionalProperties": false
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "EmailTemplateConfig": {
+      "type": "object",
+      "properties": {
+        "subject": { "type": "string" },
+        "body": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "TokenConfig": {
+      "type": "object",
+      "properties": {
+        "duration": { "type": "integer" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

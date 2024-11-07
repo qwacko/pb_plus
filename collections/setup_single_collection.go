@@ -33,6 +33,9 @@ type CollectionConfig struct {
 
 	//View Specific Options
 	ViewQuery string `mapstructure:"view_query" json:"view_query"`
+
+	//Auth Specific Options
+	AuthConfig AuthConfig `mapstructure:"auth_config" json:"auth_config"`
 }
 
 func (configuration *CollectionConfig) CreateOrUpdateCollection(app *pocketbase.PocketBase) {
@@ -56,8 +59,8 @@ func (configuration *CollectionConfig) CreateOrUpdateCollection(app *pocketbase.
 		return
 	}
 
-	if configuration.Type == "base" {
-		configuration.createOrUpdateBaseCollection(app)
+	if configuration.Type == "base" || configuration.Type == "auth" {
+		configuration.createOrUpdateBaseAuthCollection(app)
 	}
 
 	if configuration.Type == "view" {
@@ -72,15 +75,27 @@ func (configuration *CollectionConfig) CreateOrUpdateCollection(app *pocketbase.
 }
 
 func (configuration *CollectionConfig) saveAndRefreshCollection(app *pocketbase.PocketBase) (*core.Collection, error) {
-	app.Save(configuration.collection)
+	err := app.Save(configuration.collection)
+	if err != nil {
+		log.Printf("Failed to save collection %s: %v", configuration.Name, err)
+	}
 	return configuration.refreshCollection(app)
 }
 
-func (configuration *CollectionConfig) createOrUpdateBaseCollection(app *pocketbase.PocketBase) {
+func (configuration *CollectionConfig) createOrUpdateBaseAuthCollection(app *pocketbase.PocketBase) {
+
+	if !(configuration.Type == "auth") && !(configuration.Type == "base") {
+		log.Panicf("Collection %s has invalid type %s", configuration.ID, configuration.Type)
+		return
+	}
 
 	collection, err := configuration.getCollection(app)
 	if err != nil {
-		configuration.collection = core.NewBaseCollection(configuration.Name)
+		if configuration.Type == "auth" {
+			configuration.collection = core.NewAuthCollection(configuration.Name)
+		} else {
+			configuration.collection = core.NewBaseCollection(configuration.Name)
+		}
 		configuration.collection.System = false
 		configuration.collection.Id = configuration.ID
 		_, err := configuration.saveAndRefreshCollection(app)
@@ -98,9 +113,9 @@ func (configuration *CollectionConfig) createOrUpdateBaseCollection(app *pocketb
 
 	configuration.collection = collection
 
-	if configuration.collection.Type != "base" {
+	if configuration.collection.Type != "base" && configuration.collection.Type != "auth" {
 		app.Delete(configuration.collection)
-		configuration.createOrUpdateBaseCollection(app)
+		configuration.createOrUpdateBaseAuthCollection(app)
 	}
 
 	if configuration.collection.Name != configuration.Name {

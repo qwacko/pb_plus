@@ -18,6 +18,8 @@ func BuildSchema() (*gojsonschema.Schema, error) {
 	collections_schema_location := "collections/collections_schema.json"
 	collections_schema_fields_location := "collections/collections_schema_fields.json"
 	collections_schema_fields_filename := "collections_schema_fields.json"
+	collections_schema_auth_location := "collections/collections_schema_auth.json"
+	collections_schema_auth_filename := "collections_schema_auth.json"
 	superusers_schema_location := "superuser/superuser_schema.json"
 	validation_schema_location := "validation/validation_schema.json"
 	settings_schema_location := "settings/settings_schema.json"
@@ -52,10 +54,18 @@ func BuildSchema() (*gojsonschema.Schema, error) {
 						Ref: collections_schema_fields_filename,
 						Id:  resultPrefix + collections_schema_fields_location,
 					},
+					{
+						Ref: collections_schema_auth_filename,
+						Id:  resultPrefix + collections_schema_auth_location,
+					},
 				},
 			},
 			{
 				Filename:     "schema/" + collections_schema_fields_location,
+				Replacements: []SchemaReplacement{},
+			},
+			{
+				Filename:     "schema/" + collections_schema_auth_location,
 				Replacements: []SchemaReplacement{},
 			},
 			{
