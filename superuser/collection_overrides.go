@@ -12,12 +12,12 @@ import (
 
 type CollectionOverrides struct {
 	Name                    string `mapstructure:"name"`
-	PreventCollectionUpdate bool   `mapstructure:"preventCollectionUpdate"`
-	PreventCollectionCreate bool   `mapstructure:"preventCollectionCreate"`
-	PreventCollectionDelete bool   `mapstructure:"preventCollectionDelete"`
-	PreventRecordCreate     bool   `mapstructure:"preventRecordCreate"`
-	PreventRecordUpdate     bool   `mapstructure:"preventRecordUpdate"`
-	PreventRecordDelete     bool   `mapstructure:"preventRecordDelete"`
+	PreventCollectionUpdate bool   `mapstructure:"prevent_collection_update"`
+	PreventCollectionCreate bool   `mapstructure:"prevent_collection_create"`
+	PreventCollectionDelete bool   `mapstructure:"prevent_collection_delete"`
+	PreventRecordCreate     bool   `mapstructure:"prevent_record_create"`
+	PreventRecordUpdate     bool   `mapstructure:"prevent_record_update"`
+	PreventRecordDelete     bool   `mapstructure:"prevent_record_delete"`
 }
 
 func overrideCollections(app *pocketbase.PocketBase, v *viper.Viper) error {

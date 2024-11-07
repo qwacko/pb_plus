@@ -1,0 +1,62 @@
+{
+  "$id": "https://raw.githubusercontent.com/qwacko/pocketforge/refs/heads/main/jsonschema/schema/validation/validation_schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Validation Configuration.",
+  "description": "Used to enable and configuration functionality to allow for json schema validation of specific collection fields.",
+  "type": "object",
+  "properties": {
+    "enabled": {
+      "title": "Enable Validation",
+      "type": "boolean",
+      "description": "Enable validation for collections.",
+      "default": false
+    },
+    "schema_dir": {
+      "title": "Schema Directory",
+      "type": "string",
+      "description": "The directory that json schema files are stored.",
+      "default": "./pb_schema"
+    },
+    "collection_name": {
+      "title": "Collection Name",
+      "description": "The collection to store the schema information in.",
+      "type": "string",
+      "deafult": "_schema"
+    },
+    "view_rule": {
+      "type": "string",
+      "title": "View Rule",
+      "description": "The rule to apply to the view of the schema.",
+      "default": "@request.auth.id != ''"
+    },
+    "schema": {
+      "type": "array",
+      "title": "Validation Schemas",
+      "description": "List of validation schemas to create.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "collection": {
+            "title": "Collection Name",
+            "type": "string",
+            "description": "The collection to apply the schema to."
+          },
+          "field": {
+            "title": "Field Name",
+            "type": "string",
+            "description": "The field to apply the schema to."
+          },
+          "filename": {
+            "title": "Filename",
+            "type": "string",
+            "description": "The filename of the schema to apply."
+          }
+        },
+        "required": ["collection", "field", "filename"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["schema"],
+  "additionalProperties": false
+}

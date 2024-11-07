@@ -11,11 +11,13 @@ var content embed.FS
 
 func BuildSchema() (*gojsonschema.Schema, error) {
 
-	resultPrefix := "https://raw.githubusercontent.com/qwacko/pocketforge/refs/heads/main/jsonschema/"
+	resultPrefix := "https://raw.githubusercontent.com/qwacko/pocketforge/refs/heads/main/jsonschema/schema/"
 
-	collections_schema_location := "schema/collections/collections_schema.json"
-	collections_schema_fields_location := "schema/collections/collections_schema_fields.json"
+	collections_schema_location := "collections/collections_schema.json"
+	collections_schema_fields_location := "collections/collections_schema_fields.json"
 	collections_schema_fields_filename := "collections_schema_fields.json"
+	superusers_schema_location := "superuser/superuser_schema.json"
+	validation_schema_location := "validation/validation_schema.json"
 
 	var schemaConfig = SchemaDefinition{
 		CoreSchema: SingleSchema{
@@ -25,11 +27,19 @@ func BuildSchema() (*gojsonschema.Schema, error) {
 					Ref: collections_schema_location,
 					Id:  resultPrefix + collections_schema_location,
 				},
+				{
+					Ref: superusers_schema_location,
+					Id:  resultPrefix + superusers_schema_location,
+				},
+				{
+					Ref: validation_schema_location,
+					Id:  resultPrefix + validation_schema_location,
+				},
 			},
 		},
 		OtherSchema: []SingleSchema{
 			{
-				Filename: collections_schema_location,
+				Filename: "schema/" + collections_schema_location,
 				Replacements: []SchemaReplacement{
 					{
 						Ref: collections_schema_fields_filename,
@@ -38,7 +48,15 @@ func BuildSchema() (*gojsonschema.Schema, error) {
 				},
 			},
 			{
-				Filename:     collections_schema_fields_location,
+				Filename:     "schema/" + collections_schema_fields_location,
+				Replacements: []SchemaReplacement{},
+			},
+			{
+				Filename:     "schema/" + superusers_schema_location,
+				Replacements: []SchemaReplacement{},
+			},
+			{
+				Filename:     "schema/" + validation_schema_location,
 				Replacements: []SchemaReplacement{},
 			},
 		},

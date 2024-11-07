@@ -1,0 +1,81 @@
+{
+  "$id": "https://raw.githubusercontent.com/qwacko/pocketforge/refs/heads/main/jsonschema/schema/superuser/superuser_schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Superuser Configuration",
+  "description": "Configuration for superusers in pocketforge. Allows for creation of superusers, as well as restrictions of what superusers can do.",
+  "type": "object",
+  "properties": {
+    "accounts": {
+      "type": "array",
+      "title": "Superuser Accounts",
+      "description": "List of superuser accounts to create. Note that removing from here will not remove the superuser.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "title": "Email",
+            "type": "string",
+            "description": "The email of the superuser",
+            "format": "email"
+          },
+          "password": {
+            "title": "Password",
+            "type": "string",
+            "description": "The password of the superuser",
+            "format": "password"
+          }
+        },
+        "required": ["email", "password"],
+        "additionalProperties": false
+      }
+    },
+    "collections": {
+      "type": "array",
+      "title": "Superuser Permission Collections",
+      "description": "List of collections to change superuser permissions for.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "title": "Collection Name",
+            "type": "string",
+            "description": "The collection to change permissions for."
+          },
+          "prevent_collection_update": {
+            "title": "Prevent Collection Update",
+            "type": "boolean",
+            "description": "Prevent the collection from being updated."
+          },
+          "prevent_collection_delete": {
+            "title": "Prevent Collection Delete",
+            "type": "boolean",
+            "description": "Prevent the collection from being deleted."
+          },
+          "prevent_collection_create": {
+            "title": "Prevent Collection Create",
+            "type": "boolean",
+            "description": "Prevent the collection from being created."
+          },
+          "prevent_record_create": {
+            "title": "Prevent Record Create",
+            "type": "boolean",
+            "description": "Prevent records from being created in the collection."
+          },
+          "prevent_record_update": {
+            "title": "Prevent Record Update",
+            "type": "boolean",
+            "description": "Prevent records from being updated in the collection."
+          },
+          "prevent_record_delete": {
+            "title": "Prevent Record Delete",
+            "type": "boolean",
+            "description": "Prevent records from being deleted in the collection."
+          }
+        },
+        "required": ["name"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

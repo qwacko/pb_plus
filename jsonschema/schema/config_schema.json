@@ -6,6 +6,12 @@
   "properties": {
     "collections": {
       "$ref": "collections/collections_schema.json"
+    },
+    "superuser": {
+      "$ref": "superuser/superuser_schema.json"
+    },
+    "validation": {
+      "$ref": "validation/validation_schema.json"
     }
   },
   "additionalProperties": false
