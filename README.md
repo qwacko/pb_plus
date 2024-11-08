@@ -16,6 +16,8 @@ The application functions exactly like the base PocketBase application (other th
 - Schema Summary Endpoint / Diagram / Raw SQL (For AI to help writing view queries) - **Future**
 - Automatic Restart on Config Change - **Future**
 - Simple Update (Based on Pocketbase) - **Future**
+- Initial Data Load From CSV - **Future**
+- Blur Hash Image Processing - **Future**
 
 # Configuration Locations
 
