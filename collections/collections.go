@@ -6,8 +6,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-// TODO : Make Auth Collections Work
-
 func SetupConfiguredCollections(app *pocketbase.PocketBase, vAll *viper.Viper) {
 
 	v := vAll.Sub("collections")

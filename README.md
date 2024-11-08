@@ -12,9 +12,10 @@ The application functions exactly like the base PocketBase application (other th
 - [Superuser Management](#superuser-management)
 - Collection Configuration From File - **Future**
 - Chat GPT / Open Router Integration - **Future**
-- Fetch Requests - **Future**
 - Settings Automatic Loading - **Future**
 - Schema Summary Endpoint / Diagram / Raw SQL (For AI to help writing view queries) - **Future**
+- Automatic Restart on Config Change - **Future**
+- Simple Update (Based on Pocketbase) - **Future**
 
 # Configuration Locations
 
@@ -57,9 +58,9 @@ Note that the data is only validated on record creation or update, so incorrectl
 _Note that all configuration parameters are in the `validation` section of the configuration file. If the `validation` section is not present, then the `_schema` table is not configured._
 
 - `enabled` (bool): Enable or disable JSON schema validation. Default is `true`.
-- `schemaDir` (string): Directory where JSON schema files are stored. Default is `./pb_schema`.
+- `schema_dir` (string): Directory where JSON schema files are stored. Default is `./pb_schema`.
 - `table` (string): Database table used for storing schema information. Default is `_schema`.
-- `viewRule` (bool): Restrict schema viewing to authorized users only. Default is `true`.
+- `view_rule` (bool): Restrict schema viewing to authorized users only. Default is `true`.
 - `schema` (array): An array of schema objects. Each object has the following parameters:
   - `filename` (string): File name of the schema file.
   - `table` (string): Table name to validate against.
@@ -72,7 +73,7 @@ validation:
   enabled: true
   schema_dir: "./pb_schema"
   table: "_schema"
-  viewRule: "@request.auth.id != ''"
+  view_rule: "@request.auth.id != ''"
   schema:
     - table: "testtable"
       column: "testcolumn"
@@ -105,10 +106,10 @@ You can prevent superusers from performing certain actions by specifying permiss
 superuser:
   collections:
     - name: "testtable"
-      preventCollectionCreate: true
-      preventCollectionUpdate: true
-      preventCollectionDelete: true
-      preventRecordCreate: false
-      preventRecordUpdate: true
-      preventRecordDelete: true
+      prevent_collection_create: true
+      prevent_collection_update: true
+      prevent_collection_delete: true
+      prevent_record_create: false
+      prevent_record_update: true
+      prevent_record_delete: true
 ```
