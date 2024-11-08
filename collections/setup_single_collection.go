@@ -451,7 +451,7 @@ func (configuration *CollectionConfig) RemoveCollection(app *pocketbase.PocketBa
 
 	app.Delete(configuration.collection)
 
-	configuration.saveAndRefreshCollection(app)
+	configuration.collection = nil
 
 }
 

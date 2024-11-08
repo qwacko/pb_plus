@@ -170,9 +170,6 @@ func (configuration *CollectionConfig) ConfigAuth(app *pocketbase.PocketBase, v 
 	}
 
 	configuration.saveAndRefreshCollection(app)
-	if err != nil {
-		log.Panicf("Failed to save collection: %v", err)
-	}
 
 }
 
